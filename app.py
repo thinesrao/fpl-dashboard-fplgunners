@@ -16,14 +16,28 @@ except ImportError:
     GOOGLE_SHEET_NAME = "FPL-Data-YourLeague"
     st.warning("⚠️ Please create a config.py file from config_template.py and update with your league information.")
 
+import os
+import json
+
 @st.cache_resource(ttl=600)
 def connect_to_gsheet():
     """Connects to the Google Sheets API and returns the spreadsheet object."""
     scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    try:
-        creds = Credentials.from_service_account_file(".streamlit/google_credentials.json", scopes=scopes)
-    except FileNotFoundError:
-        creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
+    
+    gcp_creds_env = os.getenv("GCP_CREDENTIALS")
+    if gcp_creds_env:
+        try:
+            creds_dict = json.loads(gcp_creds_env)
+            creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+        except Exception as e:
+            st.error(f"Failed to parse GCP_CREDENTIALS env var: {e}")
+            raise e
+    else:
+        try:
+            creds = Credentials.from_service_account_file(".streamlit/google_credentials.json", scopes=scopes)
+        except FileNotFoundError:
+            creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
+            
     client = gspread.authorize(creds)
     return client.open(GOOGLE_SHEET_NAME)
 

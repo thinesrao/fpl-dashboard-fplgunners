@@ -1,6 +1,4 @@
 [global]
-# Show the app title in the browser tab
-pageTitle = "FPL Dashboard"
 
 [server]
 # Port for the Streamlit app
