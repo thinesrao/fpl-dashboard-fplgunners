@@ -13,10 +13,10 @@ This file contains all the configuration settings for your FPL dashboard.
 CLASSIC_LEAGUE_ID = 164188
 
 # Your Head-to-Head League ID (if you have one)
-#H2H_LEAGUE_ID = 789012
+H2H_LEAGUE_ID = 0
 
 # Your FPL Challenge League ID (if participating)
-#FPL_CHALLENGE_LEAGUE_ID = 345678
+FPL_CHALLENGE_LEAGUE_ID = 0
 
 # Your Google Sheet name (create this in Google Sheets)
 GOOGLE_SHEET_NAME = "FPL-Data-Fplgunners"
@@ -56,9 +56,9 @@ FPL_CHALLENGE_API_URL = "https://fplchallenge.premierleague.com/api/"
 UPDATE_FREQUENCY = 60
 
 # Enable/disable specific features
-ENABLE_FPL_CHALLENGE = True  # Set to False if not participating
-ENABLE_H2H_LEAGUE = True    # Set to False if no H2H league
-ENABLE_CUP_TRACKING = True  # Set to False if not interested in cup
+ENABLE_FPL_CHALLENGE = False  # Set to False if not participating
+ENABLE_H2H_LEAGUE = False    # Set to False if no H2H league
+ENABLE_CUP_TRACKING = False  # Set to False if not interested in cup
 
 # Custom award weights (optional - modify these to change scoring)
 AWARD_WEIGHTS = {
@@ -106,7 +106,7 @@ STREAMLIT_CONFIG = {
 # INSTRUCTIONS FOR SETUP
 # =============================================================================
 
-\"\"\"
+"""
 SETUP INSTRUCTIONS:
 
 1. COPY THIS FILE:
@@ -138,4 +138,4 @@ SETUP INSTRUCTIONS:
    - Deploy to Streamlit Cloud
 
 For detailed instructions, see README.md
-\"\"\"
+"""

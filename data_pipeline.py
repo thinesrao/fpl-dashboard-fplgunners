@@ -10,10 +10,14 @@ import os
 
 # --- Configuration ---
 try:
-    from config import CLASSIC_LEAGUE_ID, H2H_LEAGUE_ID, FPL_CHALLENGE_LEAGUE_ID, GOOGLE_SHEET_NAME
-except ImportError:
-    print("ERROR: config.py not found. Please copy config_template.py to config.py and update with your league information.")
-    print("Example: cp config_template.py config.py")
+    from config import (
+        CLASSIC_LEAGUE_ID, H2H_LEAGUE_ID, FPL_CHALLENGE_LEAGUE_ID, 
+        GOOGLE_SHEET_NAME, ENABLE_H2H_LEAGUE, ENABLE_FPL_CHALLENGE,
+        ENABLE_CUP_TRACKING
+    )
+except ImportError as e:
+    print(f"ERROR: Configuration error in config.py: {e}")
+    print("Please ensure config.py exists and contains all required variables.")
     exit(1)
 
 # --- API Endpoints ---
@@ -33,7 +37,7 @@ H2H_MATCHES_URL = f"{FPL_API_URL}leagues-h2h-matches/league/{H2H_LEAGUE_ID}/"
 
 # --- Helper Functions ---
 def get_secrets():
-    \"\"\"Loads secrets from environment variables or a local secrets.toml file.\"\"\"
+    """Loads secrets from environment variables or a local secrets.toml file."""
     # Try to load from Streamlit secrets (for deployed app, although not used here) or GitHub Actions env vars
     gcp_creds = os.getenv("GCP_CREDENTIALS")
     
@@ -62,7 +66,7 @@ def get_credentials(gcp_creds_dict):
         return None
     
 def get_json_from_url(url, headers=None):
-    \"\"\"Generic function to get JSON from a URL, now with header support.\"\"\"
+    """Generic function to get JSON from a URL, now with header support."""
     if headers is None:
         headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -91,7 +95,7 @@ def get_gameweek_to_month_map(fpl_data):
     return gw_map
 
 def get_gw_score_from_history(history, gw):
-    \"\"\"Safely gets a score from a player's history list for a specific gameweek.\"\"\"
+    """Safely gets a score from a player's history list for a specific gameweek."""
     if not history:
         return 0
     return next((item.get('total_points', 0) for item in history if item.get('round') == gw), 0)
@@ -116,9 +120,20 @@ def main():
 
     fpl_data = get_json_from_url(BOOTSTRAP_STATIC_URL)
     classic_league_data = get_json_from_url(CLASSIC_LEAGUE_URL)
-    h2h_league_data = get_json_from_url(H2H_LEAGUE_URL)
-    h2h_matches_data = get_json_from_url(H2H_MATCHES_URL)
-    if not all([fpl_data, classic_league_data, h2h_league_data, h2h_matches_data]): print("Failed to fetch base data. Exiting."); return
+    
+    # Optional data fetching
+    h2h_league_data = get_json_from_url(H2H_LEAGUE_URL) if ENABLE_H2H_LEAGUE and H2H_LEAGUE_ID else None
+    h2h_matches_data = get_json_from_url(H2H_MATCHES_URL) if ENABLE_H2H_LEAGUE and H2H_LEAGUE_ID else None
+    
+    if not all([fpl_data, classic_league_data]): 
+        print("Failed to fetch mandatory base data. Exiting.")
+        return
+    
+    if ENABLE_H2H_LEAGUE and not all([h2h_league_data, h2h_matches_data]):
+        print("Warning: Failed to fetch H2H league data. Disabling H2H features for this run.")
+        h2h_active = False
+    else:
+        h2h_active = ENABLE_H2H_LEAGUE
 
     finished_gws = [gw['id'] for gw in fpl_data['events'] if gw['finished']]
     if not finished_gws: print("No gameweeks have finished yet. Exiting."); return
@@ -181,9 +196,10 @@ def main():
         top_performers = {p['id'] for p in live_gw_data['elements'] if p['id'] in dream_team_players and p['stats']['total_points'] == top_score}
 
         classic_standings_results = classic_league_data.get('standings', {}).get('results', [])
-        h2h_standings_results = h2h_league_data.get('standings', {}).get('results', [])
+        h2h_standings_results = h2h_league_data.get('standings', {}).get('results', []) if h2h_active else []
+        
         classic_ranks_prev = {s['entry']: s['rank'] for s in classic_standings_results} if gw == 1 else {s['entry']: s['last_rank'] for s in classic_standings_results}
-        h2h_ranks_prev = {s['entry']: s['rank'] for s in h2h_standings_results} if gw == 1 else {s['entry']: s['last_rank'] for s in h2h_standings_results}
+        h2h_ranks_prev = {s['entry']: s['rank'] for s in h2h_standings_results} if h2h_active and gw == 1 else ({s['entry']: s['last_rank'] for s in h2h_standings_results} if h2h_active else {})
 
         for _, manager in manager_df.iterrows():
             manager_id, manager_name = manager['manager_id'], manager['manager_name']
@@ -313,7 +329,7 @@ def main():
                 
                 # --- Best Underdog (Definitive Self-Sufficient Logic) ---
                 underdog_score = 0
-                if gw > 1 and not time_machine_df.empty:
+                if h2h_active and gw > 1 and not time_machine_df.empty:
                     h2h_matches_df = pd.DataFrame(h2h_matches_data.get('results', []))
                     match = h2h_matches_df[((h2h_matches_df['event'] == gw) & (h2h_matches_df['entry_1_entry'] == manager_id)) | ((h2h_matches_df['event'] == gw) & (h2h_matches_df['entry_2_entry'] == manager_id))]
                     
@@ -426,58 +442,60 @@ def main():
     classic_standings_df = classic_standings_df.merge(gw_scores_wide, on='manager_id', how='left').drop(columns=['manager_id'])
     worksheets_to_write["classic_league_standings"] = classic_standings_df
     
-    h2h_standings_results = h2h_league_data.get('standings',{}).get('results',[])
-    h2h_standings_df = pd.DataFrame(h2h_standings_results)[['rank', 'entry_name', 'player_name', 'total', 'points_for', 'entry']]
-    h2h_standings_df.rename(columns={'rank': 'Standings', 'entry_name': 'Team', 'player_name': 'Manager', 'total': 'Total H2H Point', 'points_for': 'Total FPL Point', 'entry': 'manager_id'}, inplace=True)
-    h2h_standings_df = h2h_standings_df.merge(gw_scores_wide, on='manager_id', how='left').drop(columns=['manager_id'])
-    worksheets_to_write["h2h_league_standings"] = h2h_standings_df
+    if h2h_active:
+        h2h_standings_results = h2h_league_data.get('standings',{}).get('results',[])
+        h2h_standings_df = pd.DataFrame(h2h_standings_results)[['rank', 'entry_name', 'player_name', 'total', 'points_for', 'entry']]
+        h2h_standings_df.rename(columns={'rank': 'Standings', 'entry_name': 'Team', 'player_name': 'Manager', 'total': 'Total H2H Point', 'points_for': 'Total FPL Point', 'entry': 'manager_id'}, inplace=True)
+        h2h_standings_df = h2h_standings_df.merge(gw_scores_wide, on='manager_id', how='left').drop(columns=['manager_id'])
+        worksheets_to_write["h2h_league_standings"] = h2h_standings_df
     
     # --- FPL Challenge Weekly Manager (as per your definitive guide) ---
-    print("Processing FPL Challenge awards...")
-    fpl_challenge_log = []
-    
-    # Step 1: Get all managers from the Challenge league
-    challenge_league_data = get_json_from_url(FPL_CHALLENGE_LEAGUE_URL)
-    if challenge_league_data and 'standings' in challenge_league_data:
-        challenge_manager_df = pd.DataFrame(challenge_league_data['standings']['results'])[['entry', 'player_name', 'entry_name']].rename(
-            columns={'entry': 'manager_id', 'player_name': 'manager_name', 'entry_name': 'team_name'}
-        )
+    if ENABLE_FPL_CHALLENGE and FPL_CHALLENGE_LEAGUE_ID:
+        print("Processing FPL Challenge awards...")
+        fpl_challenge_log = []
+        
+        # Step 1: Get all managers from the Challenge league
+        challenge_league_data = get_json_from_url(FPL_CHALLENGE_LEAGUE_URL)
+        if challenge_league_data and 'standings' in challenge_league_data:
+            challenge_manager_df = pd.DataFrame(challenge_league_data['standings']['results'])[['entry', 'player_name', 'entry_name']].rename(
+                columns={'entry': 'manager_id', 'player_name': 'manager_name', 'entry_name': 'team_name'}
+            )
 
-        # Step 2: Get the gameweek history for each manager
-        print("Pre-fetching FPL Challenge manager histories...")
-        challenge_manager_histories = {
-            row['manager_id']: get_json_from_url(f"https://fplchallenge.premierleague.com/api/entry/{row['manager_id']}/history/") 
-            for _, row in challenge_manager_df.iterrows()
-        }
+            # Step 2: Get the gameweek history for each manager
+            print("Pre-fetching FPL Challenge manager histories...")
+            challenge_manager_histories = {
+                row['manager_id']: get_json_from_url(f"https://fplchallenge.premierleague.com/api/entry/{row['manager_id']}/history/") 
+                for _, row in challenge_manager_df.iterrows()
+            }
 
-        # Step 3: Combine and calculate the weekly standings
-        for gw in range(1, last_finished_gw + 1):
-            gw_scores = []
-            for manager_id, history in challenge_manager_histories.items():
-                if history and 'current' in history:
-                    # Find the specific gameweek's score from the history list
-                    gw_history_data = next((item for item in history['current'] if item['event'] == gw), None)
-                    if gw_history_data:
-                        gw_scores.append({'manager_id': manager_id, 'score': gw_history_data['points']})
-            
-            if gw_scores:
-                gw_scores_df = pd.DataFrame(gw_scores)
-                # Find the top score for the week
-                max_score = gw_scores_df['score'].max()
-                # Find all managers who achieved that score (handles ties)
-                winners = gw_scores_df[gw_scores_df['score'] == max_score]
-                winners = winners.merge(challenge_manager_df, on='manager_id')
-
-                # Aggregate winners in case of a tie
-                winner_teams = ', '.join(winners['team_name'])
-                winner_managers = ', '.join(winners['manager_name'])
+            # Step 3: Combine and calculate the weekly standings
+            for gw in range(1, last_finished_gw + 1):
+                gw_scores = []
+                for manager_id, history in challenge_manager_histories.items():
+                    if history and 'current' in history:
+                        # Find the specific gameweek's score from the history list
+                        gw_history_data = next((item for item in history['current'] if item['event'] == gw), None)
+                        if gw_history_data:
+                            gw_scores.append({'manager_id': manager_id, 'score': gw_history_data['points']})
                 
-                fpl_challenge_log.append({
-                    'Gameweek': gw, 'Team': winner_teams, 'Manager': winner_managers, 'Score': max_score
-                })
+                if gw_scores:
+                    gw_scores_df = pd.DataFrame(gw_scores)
+                    # Find the top score for the week
+                    max_score = gw_scores_df['score'].max()
+                    # Find all managers who achieved that score (handles ties)
+                    winners = gw_scores_df[gw_scores_df['score'] == max_score]
+                    winners = winners.merge(challenge_manager_df, on='manager_id')
 
-        if fpl_challenge_log:
-            worksheets_to_write["fpl_challenge_weekly_log"] = pd.DataFrame(fpl_challenge_log)
+                    # Aggregate winners in case of a tie
+                    winner_teams = ', '.join(winners['team_name'])
+                    winner_managers = ', '.join(winners['manager_name'])
+                    
+                    fpl_challenge_log.append({
+                        'Gameweek': gw, 'Team': winner_teams, 'Manager': winner_managers, 'Score': max_score
+                    })
+
+            if fpl_challenge_log:
+                worksheets_to_write["fpl_challenge_weekly_log"] = pd.DataFrame(fpl_challenge_log)
 
     # --- Classic Weekly Manager (as per your definitive guide) ---        
     gw_scores_no_chips = []
@@ -534,85 +552,86 @@ def main():
             worksheets_to_write[f"classic_monthly_{month_name}"] = final_month_df[column_order]
 
     # --- H2H Monthly Manager (as per screenshot) ---
-    h2h_matches_df = pd.DataFrame(h2h_matches_data.get('results', []))
-    if not h2h_matches_df.empty:
-        # Define the official FPL monthly gameweek ranges
-        FPL_MONTH_MAP = {
-            "August": list(range(1, 4)), "September": list(range(4, 7)),
-            "October": list(range(7, 10)), "November": list(range(10, 14)),
-            "December": list(range(14, 20)), "January": list(range(20, 25)),
-            "February": list(range(25, 29)), "March": list(range(29, 32)),
-            "April": list(range(32, 35)), "May": list(range(35, 39)),
-        }
-        
-        # Create a historical log of H2H standings at the end of each GW
-        h2h_history = []
-        for gw in range(1, last_finished_gw + 1):
-            # We must re-fetch H2H standings for each GW to get historical ranks
-            gw_h2h_data = get_json_from_url(f"{FPL_API_URL}leagues-h2h/{H2H_LEAGUE_ID}/standings/?page_standings=1&event={gw}")
-            if gw_h2h_data:
-                for team in gw_h2h_data.get('standings',{}).get('results',[]):
-                    h2h_history.append({'gameweek': gw, 'manager_id': team['entry'], 'total_h2h_points': team['total']})
-        h2h_history_df = pd.DataFrame(h2h_history)
+    if h2h_active:
+        h2h_matches_df = pd.DataFrame(h2h_matches_data.get('results', []))
+        if not h2h_matches_df.empty:
+            # Define the official FPL monthly gameweek ranges
+            FPL_MONTH_MAP = {
+                "August": list(range(1, 4)), "September": list(range(4, 7)),
+                "October": list(range(7, 10)), "November": list(range(10, 14)),
+                "December": list(range(14, 20)), "January": list(range(20, 25)),
+                "February": list(range(25, 29)), "March": list(range(29, 32)),
+                "April": list(range(32, 35)), "May": list(range(35, 39)),
+            }
+            
+            # Create a historical log of H2H standings at the end of each GW
+            h2h_history = []
+            for gw in range(1, last_finished_gw + 1):
+                # We must re-fetch H2H standings for each GW to get historical ranks
+                gw_h2h_data = get_json_from_url(f"{FPL_API_URL}leagues-h2h/{H2H_LEAGUE_ID}/standings/?page_standings=1&event={gw}")
+                if gw_h2h_data:
+                    for team in gw_h2h_data.get('standings',{}).get('results',[]):
+                        h2h_history.append({'gameweek': gw, 'manager_id': team['entry'], 'total_h2h_points': team['total']})
+            h2h_history_df = pd.DataFrame(h2h_history)
 
-        for month_name, gws_in_month in FPL_MONTH_MAP.items():
-            if not gws_in_month or gws_in_month[0] > last_finished_gw:
-                continue
+            for month_name, gws_in_month in FPL_MONTH_MAP.items():
+                if not gws_in_month or gws_in_month[0] > last_finished_gw:
+                    continue
 
-            last_gw_of_month = max([gw for gw in gws_in_month if gw <= last_finished_gw])
-            last_gw_of_prev_month = min(gws_in_month) - 1
+                last_gw_of_month = max([gw for gw in gws_in_month if gw <= last_finished_gw])
+                last_gw_of_prev_month = min(gws_in_month) - 1
 
-            h2h_totals_end_of_month = h2h_history_df[h2h_history_df['gameweek'] == last_gw_of_month][['manager_id', 'total_h2h_points']]
-            
-            if last_gw_of_prev_month > 0:
-                h2h_totals_start_of_month = h2h_history_df[h2h_history_df['gameweek'] == last_gw_of_prev_month][['manager_id', 'total_h2h_points']]
-                monthly_summary = h2h_totals_end_of_month.merge(h2h_totals_start_of_month, on='manager_id', suffixes=('_end', '_start'))
-                monthly_summary['Total_Head_to_Head_FPL_Point'] = monthly_summary['total_h2h_points_end'] - monthly_summary['total_h2h_points_start']
-            else:
-                monthly_summary = h2h_totals_end_of_month.rename(columns={'total_h2h_points': 'Total_Head_to_Head_FPL_Point'})
-            
-            # Deconstruct matches into individual results for FPL Points and Point Difference
-            monthly_matches = h2h_matches_df[h2h_matches_df['event'].isin(gws_in_month)]
-            results_list = []
-            for _, row in monthly_matches.iterrows():
-                results_list.append({'manager_id': row['entry_1_entry'], 'gameweek': row['event'], 'points': row['entry_1_points'], 'opponent_score': row['entry_2_points']})
-                results_list.append({'manager_id': row['entry_2_entry'], 'gameweek': row['event'], 'points': row['entry_2_points'], 'opponent_score': row['entry_1_points']})
-            monthly_results_df = pd.DataFrame(results_list)
+                h2h_totals_end_of_month = h2h_history_df[h2h_history_df['gameweek'] == last_gw_of_month][['manager_id', 'total_h2h_points']]
+                
+                if last_gw_of_prev_month > 0:
+                    h2h_totals_start_of_month = h2h_history_df[h2h_history_df['gameweek'] == last_gw_of_prev_month][['manager_id', 'total_h2h_points']]
+                    monthly_summary = h2h_totals_end_of_month.merge(h2h_totals_start_of_month, on='manager_id', suffixes=('_end', '_start'))
+                    monthly_summary['Total_Head_to_Head_FPL_Point'] = monthly_summary['total_h2h_points_end'] - monthly_summary['total_h2h_points_start']
+                else:
+                    monthly_summary = h2h_totals_end_of_month.rename(columns={'total_h2h_points': 'Total_Head_to_Head_FPL_Point'})
+                
+                # Deconstruct matches into individual results for FPL Points and Point Difference
+                monthly_matches = h2h_matches_df[h2h_matches_df['event'].isin(gws_in_month)]
+                results_list = []
+                for _, row in monthly_matches.iterrows():
+                    results_list.append({'manager_id': row['entry_1_entry'], 'gameweek': row['event'], 'points': row['entry_1_points'], 'opponent_score': row['entry_2_points']})
+                    results_list.append({'manager_id': row['entry_2_entry'], 'gameweek': row['event'], 'points': row['entry_2_points'], 'opponent_score': row['entry_1_points']})
+                monthly_results_df = pd.DataFrame(results_list)
 
-            point_diff_calc = monthly_results_df.groupby('manager_id')[['points', 'opponent_score']].sum()
-            fpl_points_summary = point_diff_calc.reset_index()
-            fpl_points_summary['FPL_Point_Difference'] = fpl_points_summary['points'] - fpl_points_summary['opponent_score']
-            
-            final_month_df = monthly_summary.merge(fpl_points_summary[['manager_id', 'FPL_Point_Difference']], on='manager_id')
+                point_diff_calc = monthly_results_df.groupby('manager_id')[['points', 'opponent_score']].sum()
+                fpl_points_summary = point_diff_calc.reset_index()
+                fpl_points_summary['FPL_Point_Difference'] = fpl_points_summary['points'] - fpl_points_summary['opponent_score']
+                
+                final_month_df = monthly_summary.merge(fpl_points_summary[['manager_id', 'FPL_Point_Difference']], on='manager_id')
 
-            # Pivot GW scores to create 'vs' columns
-            gw_scores_pivot = monthly_results_df.pivot(index='manager_id', columns='gameweek', values='points').fillna(0).astype(int)
-            opponent_scores_pivot = monthly_results_df.pivot(index='manager_id', columns='gameweek', values='opponent_score').fillna(0).astype(int)
-            
-            # First, combine the scores into the 'vs' format using integer column names
-            for gw_col_num in gws_in_month:
-                # Check if the integer column (e.g., 1, 2, 3) exists in both tables
-                if gw_col_num in gw_scores_pivot.columns and gw_col_num in opponent_scores_pivot.columns:
-                    # Modify the gw_scores_pivot table in place
-                    gw_scores_pivot[gw_col_num] = gw_scores_pivot[gw_col_num].astype(str) + " vs " + opponent_scores_pivot[gw_col_num].astype(str)
+                # Pivot GW scores to create 'vs' columns
+                gw_scores_pivot = monthly_results_df.pivot(index='manager_id', columns='gameweek', values='points').fillna(0).astype(int)
+                opponent_scores_pivot = monthly_results_df.pivot(index='manager_id', columns='gameweek', values='opponent_score').fillna(0).astype(int)
+                
+                # First, combine the scores into the 'vs' format using integer column names
+                for gw_col_num in gws_in_month:
+                    # Check if the integer column (e.g., 1, 2, 3) exists in both tables
+                    if gw_col_num in gw_scores_pivot.columns and gw_col_num in opponent_scores_pivot.columns:
+                        # Modify the gw_scores_pivot table in place
+                        gw_scores_pivot[gw_col_num] = gw_scores_pivot[gw_col_num].astype(str) + " vs " + opponent_scores_pivot[gw_col_num].astype(str)
 
-            # Second, AFTER the loop is finished, rename the columns to the desired "GW1", "GW2" format
-            gw_scores_pivot.columns = [f"GW{col}" for col in gw_scores_pivot.columns]
-                        
-            final_month_df = manager_df.merge(final_month_df, on='manager_id', how='left').fillna(0)
-            final_month_df = final_month_df.merge(gw_scores_pivot, on='manager_id', how='left').fillna('0 vs 0')
-            
-            final_month_df.sort_values(by=['Total_Head_to_Head_FPL_Point', 'FPL_Point_Difference'], ascending=[False, False], inplace=True)
-            final_month_df['Standings'] = final_month_df['Total_Head_to_Head_FPL_Point'].rank(method='min', ascending=False).astype(int)
-            
-            final_month_df.rename(columns={'team_name': 'Team', 'manager_name': 'Manager'}, inplace=True)
-            
-            gw_cols = sorted([f"GW{gw}" for gw in gws_in_month])
-            column_order = ['Standings', 'Team', 'Manager', 'Total_Head_to_Head_FPL_Point', 'FPL_Point_Difference'] + [col for col in gw_cols if col in final_month_df.columns]
-            worksheets_to_write[f"h2h_monthly_{month_name}"] = final_month_df[column_order]                                                                            
+                # Second, AFTER the loop is finished, rename the columns to the desired "GW1", "GW2" format
+                gw_scores_pivot.columns = [f"GW{col}" for col in gw_scores_pivot.columns]
+                            
+                final_month_df = manager_df.merge(final_month_df, on='manager_id', how='left').fillna(0)
+                final_month_df = final_month_df.merge(gw_scores_pivot, on='manager_id', how='left').fillna('0 vs 0')
+                
+                final_month_df.sort_values(by=['Total_Head_to_Head_FPL_Point', 'FPL_Point_Difference'], ascending=[False, False], inplace=True)
+                final_month_df['Standings'] = final_month_df['Total_Head_to_Head_FPL_Point'].rank(method='min', ascending=False).astype(int)
+                
+                final_month_df.rename(columns={'team_name': 'Team', 'manager_name': 'Manager'}, inplace=True)
+                
+                gw_cols = sorted([f"GW{gw}" for gw in gws_in_month])
+                column_order = ['Standings', 'Team', 'Manager', 'Total_Head_to_Head_FPL_Point', 'FPL_Point_Difference'] + [col for col in gw_cols if col in final_month_df.columns]
+                worksheets_to_write[f"h2h_monthly_{month_name}"] = final_month_df[column_order]
+                                                                            
     # --- League Cup Winner ---
-    # This award is only processed if the season has progressed far enough for the cup to be relevant.
-    if last_finished_gw >= 34:
+    if ENABLE_CUP_TRACKING and last_finished_gw >= 34:
         cup_data = get_json_from_url(CUP_STATUS_URL)
         cup_winner_name = "To Be Determined"
         cup_winner_team = "---"
@@ -643,7 +662,7 @@ def main():
     print("Updating the '_time_machine_ranks' sheet...")
     
     classic_ranks_now = {s['entry']: s['rank'] for s in classic_league_data.get('standings', {}).get('results', [])}
-    h2h_ranks_now = {s['entry']: s['rank'] for s in h2h_league_data.get('standings', {}).get('results', [])}
+    h2h_ranks_now = {s['entry']: s['rank'] for s in h2h_league_data.get('standings', {}).get('results', [])} if h2h_active else {}
     
     # Remove any old data for the current gameweek to prevent duplicates
     time_machine_df = time_machine_df[time_machine_df['gameweek'] != last_finished_gw]
@@ -657,7 +676,7 @@ def main():
             'manager_id': manager_id,
             'manager_name': manager['manager_name'],
             'classic_rank': classic_ranks_now.get(manager_id, 999),
-            'h2h_rank': h2h_ranks_now.get(manager_id, 999)
+            'h2h_rank': h2h_ranks_now.get(manager_id, 999) if h2h_active else 0
         })
     
     new_ranks_df = pd.DataFrame(new_ranks_list)
