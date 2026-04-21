@@ -236,6 +236,48 @@ try:
             gw_range = (1, 1)
             st.sidebar.info("📊 Range slider for charts will be available from Gameweek 2 onwards.")
 
+        # --- TOP LEVEL HIGHLIGHTS ---
+        st.markdown("---")
+        st.markdown("<h3 style='text-align: center;'>🌟 The Big Three Awards 🌟</h3>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        col_c, col_gw, col_wins = st.columns(3)
+        
+        with col_c:
+            with st.container(border=True):
+                st.markdown("<h4 style='text-align: center;'>🏆 Classic League Top 5</h4>", unsafe_allow_html=True)
+                if classic_standings is not None and not classic_standings.empty:
+                    top_5_df = classic_standings.copy().head(5)
+                    st.dataframe(top_5_df[['Standings', 'Manager', 'Total']].set_index('Standings'), use_container_width=True)
+                    
+        with col_gw:
+            with st.container(border=True):
+                st.markdown("<h4 style='text-align: center;'>🚀 Best Gameweek</h4>", unsafe_allow_html=True)
+                highest_gw_df = all_data.get("highest_gw_score")
+                if highest_gw_df is not None and not highest_gw_df.empty:
+                    winner = highest_gw_df.iloc[0]
+                    score = winner.get('Score', 0)
+                    manager = winner.get('Manager', 'N/A')
+                    achieved_gw = winner.get('Achieved_GW', '?')
+                    st.markdown(f"<h1 style='text-align: center; color: #2bfca4;'>{score} pts</h1>", unsafe_allow_html=True)
+                    st.markdown(f"<h5 style='text-align: center;'>{manager}</h5>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='text-align: center; opacity: 0.7;'>Achieved in GW {achieved_gw}</p>", unsafe_allow_html=True)
+
+        with col_wins:
+            with st.container(border=True):
+                st.markdown("<h4 style='text-align: center;'>👑 Most Weekly Wins</h4>", unsafe_allow_html=True)
+                most_wins_df = all_data.get("most_weekly_wins")
+                if most_wins_df is not None and not most_wins_df.empty:
+                    winner = most_wins_df.iloc[0]
+                    wins = winner.get('Total_Wins', 0)
+                    manager = winner.get('Manager', 'N/A')
+                    last_win_gw = winner.get('Last_Win_GW', '?')
+                    st.markdown(f"<h1 style='text-align: center; color: #2bfca4;'>{wins} Wins</h1>", unsafe_allow_html=True)
+                    st.markdown(f"<h5 style='text-align: center;'>{manager}</h5>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='text-align: center; opacity: 0.7;'>Last win in GW {last_win_gw}</p>", unsafe_allow_html=True)
+                    
+        st.markdown("---")
+
         tab_standard, tab_special, tab_details = st.tabs(["🏆 Standard Awards", "🏅 Special Awards", "📊 Detailed Standings"])
 
         with tab_standard:

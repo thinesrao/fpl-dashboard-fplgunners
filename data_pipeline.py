@@ -96,6 +96,7 @@ def get_gameweek_to_month_map(fpl_data):
 
 
 
+
 def main():
     print("--- Starting FPL Data Pipeline ---")
     # --- THIS IS THE CORRECTED LOGIC BLOCK ---
@@ -405,15 +406,33 @@ def main():
         single_value_awards['freehit_king'].append({'Manager': manager_name, 'Team': team_name, 'Score': sum(fh_scores)})
         single_value_awards['benchboost_king'].append({'Manager': manager_name, 'Team': team_name, 'Score': sum(bb_scores)})
         single_value_awards['triplecaptain_king'].append({'Manager': manager_name, 'Team': team_name, 'Score': sum(tc_scores)})
-        single_value_awards['highest_gw_score'].append({'Manager': manager_name, 'Team': team_name, 'Score': max(normal_scores) if normal_scores else 0})
+        
+        # --- Best Gameweek Award (Includes Chips, Tiebreaker: Earlier GW) ---
+        max_score = -999
+        achieved_gw = 999
+        if history and 'current' in history:
+            for gw_data in history['current']:
+                score = gw_data['points'] - gw_data['event_transfers_cost']
+                gw = gw_data['event']
+                if score > max_score:
+                    max_score = score
+                    achieved_gw = gw
+                elif score == max_score and gw < achieved_gw:
+                    achieved_gw = gw
+        single_value_awards['highest_gw_score'].append({'Manager': manager_name, 'Team': team_name, 'Score': max_score if max_score != -999 else 0, 'Achieved_GW': achieved_gw if achieved_gw != 999 else 0})
 
     for award_name, data in single_value_awards.items():
         if not data: continue
         df = pd.DataFrame(data)
         if 'Score' in df.columns:
-             df = df.sort_values(by='Score', ascending=False).reset_index(drop=True)
-             df['Standings'] = df['Score'].rank(method='min', ascending=False).astype(int)
-             worksheets_to_write[award_name] = df[['Standings', 'Team', 'Manager', 'Score']]
+             if award_name == 'highest_gw_score':
+                 df['Standings'] = df[['Score', 'Achieved_GW']].apply(lambda x: (-x['Score'], x['Achieved_GW']), axis=1).rank(method='min').astype(int)
+                 df = df.sort_values(by='Standings').reset_index(drop=True)
+                 worksheets_to_write[award_name] = df[['Standings', 'Team', 'Manager', 'Score', 'Achieved_GW']]
+             else:
+                 df = df.sort_values(by='Score', ascending=False).reset_index(drop=True)
+                 df['Standings'] = df['Score'].rank(method='min', ascending=False).astype(int)
+                 worksheets_to_write[award_name] = df[['Standings', 'Team', 'Manager', 'Score']]
 
     # Process Standard Awards
     # --- Corrected Gameweek Score Calculation (with transfer costs) ---
@@ -489,22 +508,30 @@ def main():
             if fpl_challenge_log:
                 worksheets_to_write["fpl_challenge_weekly_log"] = pd.DataFrame(fpl_challenge_log)
 
-    # --- Classic Weekly Manager (as per your definitive guide) ---        
-    gw_scores_no_chips = []
+    # --- Classic Weekly Manager & Most Weekly Wins ---        
+    gw_scores_all = []
     for m_id, hist in manager_histories.items():
         if not hist: continue
-        chip_weeks = {c['event'] for c in hist.get('chips', [])}
         for gw_data in hist.get('current', []):
-            if gw_data['event'] not in chip_weeks:
-               # --- THIS IS THE CORRECTED LINE ---
-                gw_scores_no_chips.append({'gameweek': gw_data['event'], 'manager_id': m_id, 'score': gw_data['points']})
-    weekly_winners_log_df = pd.DataFrame(gw_scores_no_chips)
+            # Includes all chips
+            gw_scores_all.append({'gameweek': gw_data['event'], 'manager_id': m_id, 'score': gw_data['points'] - gw_data['event_transfers_cost']})
+            
+    weekly_winners_log_df = pd.DataFrame(gw_scores_all)
     if not weekly_winners_log_df.empty:
         max_scores = weekly_winners_log_df.groupby('gameweek')['score'].max().reset_index()
         weekly_winners = pd.merge(weekly_winners_log_df, max_scores, on=['gameweek', 'score'])
+        
+        # -- 1. Most Weekly Wins Leaderboard --
+        manager_wins = weekly_winners.groupby('manager_id').agg(Total_Wins=('gameweek', 'count'), Last_Win_GW=('gameweek', 'max')).reset_index()
+        manager_wins = manager_wins.merge(manager_df, on='manager_id')
+        manager_wins.rename(columns={'team_name': 'Team', 'manager_name': 'Manager'}, inplace=True)
+        manager_wins['Standings'] = manager_wins[['Total_Wins', 'Last_Win_GW']].apply(lambda x: (-x['Total_Wins'], x['Last_Win_GW']), axis=1).rank(method='min').astype(int)
+        manager_wins.sort_values(by='Standings', inplace=True)
+        worksheets_to_write["most_weekly_wins"] = manager_wins[['Standings', 'Team', 'Manager', 'Total_Wins', 'Last_Win_GW']]
+        
+        # -- 2. Weekly Manager Log --
         weekly_winners = weekly_winners.merge(manager_df, on='manager_id')
         weekly_winners_final_df = weekly_winners.groupby('gameweek').agg(Team=('team_name', lambda x: ', '.join(x)), Manager=('manager_name', lambda x: ', '.join(x)), Score=('score', 'first')).reset_index()
-        # --- THIS IS THE FIX ---
         weekly_winners_final_df.rename(columns={'gameweek': 'Gameweek'}, inplace=True)
         worksheets_to_write["weekly_manager_log"] = weekly_winners_final_df    
     # --- Corrected Monthly Score Calculation (with transfer costs) ---
