@@ -94,11 +94,6 @@ def get_gameweek_to_month_map(fpl_data):
         gw_map[gw_info['id']] = deadline.strftime('%B')
     return gw_map
 
-def get_gw_score_from_history(history, gw):
-    """Safely gets a score from a player's history list for a specific gameweek."""
-    if not history:
-        return 0
-    return next((item.get('total_points', 0) for item in history if item.get('round') == gw), 0)
 
 
 def main():
@@ -111,7 +106,7 @@ def main():
     gc = get_credentials(gcp_creds)
     if not gc:
         return # Exit if authentication fails
- 
+
     spreadsheet = gc.open(GOOGLE_SHEET_NAME)
     print(f"Connected to Google Sheet: '{GOOGLE_SHEET_NAME}'")
     
@@ -151,7 +146,6 @@ def main():
     print("Pre-fetching manager histories, transfers, and player details...")
     manager_histories = {row['manager_id']: get_json_from_url(ENTRY_HISTORY_URL.format(TID=row['manager_id'])) for _, row in manager_df.iterrows()}
     manager_transfers = {row['manager_id']: get_json_from_url(ENTRY_TRANSFERS_URL.format(TID=row['manager_id'])) for _, row in manager_df.iterrows()}
-    player_details_dict = {pid: get_json_from_url(ELEMENT_SUMMARY_URL.format(EID=pid)) for pid in elements_df['id']}
 
     # --- THE DEFINITIVE TIME MACHINE (based on your superior logic) ---
     print("Loading historical rank 'Time Machine' from Google Sheet...")
@@ -261,9 +255,7 @@ def main():
                 
                 # If a Vice-Captain was chosen, get their normal, single FPL points for that gameweek
                 if vc_id:
-                    vc_history = player_details_dict.get(vc_id, {}).get('history', [])
-                    # Safely get the score for the current gameweek
-                    vc_points = get_gw_score_from_history(vc_history, gw)
+                    vc_points = next((p['stats'].get('total_points', 0) for p in live_gw_data.get('elements', []) if p['id'] == vc_id), 0)
 
                 long_format_data['best_vc'].append({'gameweek': gw, 'manager_name': manager_name, 'score': vc_points})
                 
@@ -278,15 +270,15 @@ def main():
                 if chip_played_this_gw not in ['wildcard', 'freehit']:
                     transfers_in_gw = [t for t in manager_transfers.get(manager_id, []) if t['event'] == gw]
                     if transfers_in_gw:
-                        points_in = sum(get_gw_score_from_history(player_details_dict.get(t['element_in'], {}).get('history', []), gw) for t in transfers_in_gw)
-                        points_out = sum(get_gw_score_from_history(player_details_dict.get(t['element_out'], {}).get('history', []), gw) for t in transfers_in_gw)
+                        points_in = sum(next((p['stats'].get('total_points', 0) for p in live_gw_data.get('elements', []) if p['id'] == t['element_in']), 0) for t in transfers_in_gw)
+                        points_out = sum(next((p['stats'].get('total_points', 0) for p in live_gw_data.get('elements', []) if p['id'] == t['element_out']), 0) for t in transfers_in_gw)
                         cost = next((h.get('event_transfers_cost', 0) for h in history_data.get('current', []) if h.get('event') == gw), 0)
                         transfer_score_gw = points_in - points_out - cost
 
                 long_format_data['transfer_king'].append({'gameweek': gw, 'manager_name': manager_name, 'score': transfer_score_gw})
                 
                 # --- Bench King: CORRECTED LOGIC ---
-                bench_points = sum(get_gw_score_from_history(player_details_dict.get(pid, {}).get('history', []), gw) for pid in bench_squad_ids)
+                bench_points = sum(next((p['stats'].get('total_points', 0) for p in live_gw_data.get('elements', []) if p['id'] == pid), 0) for pid in bench_squad_ids)
                 long_format_data['bench_king'].append({'gameweek': gw, 'manager_name': manager_name, 'score': bench_points})
                 
                 dream_team_score = sum(4 if p_id in top_performers else 1 for p_id in active_squad_ids if p_id in dream_team_players)
