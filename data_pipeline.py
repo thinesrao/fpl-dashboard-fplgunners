@@ -33,7 +33,7 @@ H2H_MATCHES_URL = f"{FPL_API_URL}leagues-h2h-matches/league/{H2H_LEAGUE_ID}/"
 
 # --- Helper Functions ---
 def get_secrets():
-    """Loads secrets from environment variables or a local secrets.toml file."""
+    \"\"\"Loads secrets from environment variables or a local secrets.toml file.\"\"\"
     # Try to load from Streamlit secrets (for deployed app, although not used here) or GitHub Actions env vars
     gcp_creds = os.getenv("GCP_CREDENTIALS")
     
@@ -62,7 +62,11 @@ def get_credentials(gcp_creds_dict):
         return None
     
 def get_json_from_url(url, headers=None):
-    """Generic function to get JSON from a URL, now with header support."""
+    \"\"\"Generic function to get JSON from a URL, now with header support.\"\"\"
+    if headers is None:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
     try:
         response = requests.get(url, timeout=15, headers=headers)
         response.raise_for_status()
@@ -87,7 +91,7 @@ def get_gameweek_to_month_map(fpl_data):
     return gw_map
 
 def get_gw_score_from_history(history, gw):
-    """Safely gets a score from a player's history list for a specific gameweek."""
+    \"\"\"Safely gets a score from a player's history list for a specific gameweek.\"\"\"
     if not history:
         return 0
     return next((item.get('total_points', 0) for item in history if item.get('round') == gw), 0)
@@ -103,7 +107,7 @@ def main():
     gc = get_credentials(gcp_creds)
     if not gc:
         return # Exit if authentication fails
-
+ 
     spreadsheet = gc.open(GOOGLE_SHEET_NAME)
     print(f"Connected to Google Sheet: '{GOOGLE_SHEET_NAME}'")
     

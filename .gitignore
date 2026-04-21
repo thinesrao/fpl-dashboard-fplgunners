@@ -48,8 +48,9 @@ Thumbs.db
 .streamlit/secrets.toml
 .streamlit/google_credentials.json
 
-# Configuration (contains private data)
-config.py
+# Configuration (contains league specific data)
+# config.py is now tracked to support GitHub Actions
+# config_local.py remains ignored for truly private settings
 config_local.py
 config_production.py
 config_development.py
