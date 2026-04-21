@@ -1,0 +1,41 @@
+# This name will be displayed in the GitHub Actions UI
+name: FPL Data Pipeline
+
+# Triggers for the workflow
+on:
+  # Run this workflow automatically on a schedule (every day at 8 AM UTC)
+  schedule:
+    - cron: '0 */6 * * *' # You can customize this. See https://crontab.guru/
+  
+  # This line is ESSENTIAL for the "Run workflow" button to appear
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # Match your development version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run FPL Data Pipeline
+        # The GCP_CREDENTIALS secret is read from GitHub Settings
+        # Make sure to set up your config.py file with your league information
+        run: |
+          if [ ! -f config.py ]; then
+            echo "❌ config.py not found. Please create it from config_template.py"
+            echo "See README.md for setup instructions"
+            exit 1
+          fi
+          python3 data_pipeline.py
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}

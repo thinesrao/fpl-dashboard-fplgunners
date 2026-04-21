@@ -1,0 +1,42 @@
+[global]
+# Show the app title in the browser tab
+pageTitle = "FPL Dashboard"
+
+[server]
+# Port for the Streamlit app
+port = 8501
+
+# Address to bind to
+address = "0.0.0.0"
+
+# Enable CORS for all origins
+enableCORS = false
+
+# Enable XSRF protection
+enableXsrfProtection = false
+
+[browser]
+# Whether to gather usage stats
+gatherUsageStats = false
+
+# Server address to use when connecting to the app
+serverAddress = "localhost"
+
+# Server port to use when connecting to the app
+serverPort = 8501
+
+[theme]
+# Primary color for the app
+primaryColor = "#2bfca4"
+
+# Background color
+backgroundColor = "#0D1117"
+
+# Secondary background color
+secondaryBackgroundColor = "#161B22"
+
+# Text color
+textColor = "#F0F6FC"
+
+# Font family
+font = "Inter"

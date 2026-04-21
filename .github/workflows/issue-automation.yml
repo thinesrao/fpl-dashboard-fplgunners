@@ -1,0 +1,139 @@
+name: Issue Automation
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, labeled]
+
+jobs:
+  welcome-new-issue:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome new issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(label => label.name);
+            
+            let comment = '';
+            
+            if (labels.includes('bug')) {
+              comment = `🐛 **Bug Report Received**
+              
+Thank you for reporting this bug! We'll investigate and get back to you soon.
+              
+**Next Steps:**
+- Our team will review the issue
+- We may ask for additional information
+- A fix will be implemented if confirmed
+              
+**Help us help you:**
+- Please provide any additional details if requested
+- Test any proposed fixes
+- Let us know if the issue is resolved
+              
+Thanks for helping improve the FPL Dashboard! 🏆`;
+            } else if (labels.includes('enhancement')) {
+              comment = `✨ **Feature Request Received**
+              
+Thank you for suggesting this feature! We appreciate your input.
+              
+**Next Steps:**
+- Our team will review the feature request
+- We'll discuss implementation feasibility
+- We may ask for more details about your use case
+              
+**Help us help you:**
+- Provide additional context if requested
+- Consider contributing if you'd like to implement it
+- Share your thoughts on the feature
+              
+Thanks for helping make FPL Dashboard better! 🚀`;
+            } else if (labels.includes('help wanted') || labels.includes('question')) {
+              comment = `🛠️ **Setup Help Request**
+              
+Thank you for reaching out for help! We're here to assist you.
+              
+**Next Steps:**
+- Our community will help with your setup
+- Check the documentation and existing issues first
+- We'll provide step-by-step guidance
+              
+**Quick Setup Tips:**
+- Make sure you've run \`python setup.py\`
+- Verify your \`config.py\` is properly configured
+- Check your Google Sheets setup
+              
+**Resources:**
+- 📖 [README.md](https://github.com/thinesrao/fpl-dashboard-streamlit#readme)
+- 🛠️ [Setup Guide](https://github.com/thinesrao/fpl-dashboard-streamlit#-setup-guide)
+- 💬 [Discussions](https://github.com/thinesrao/fpl-dashboard-streamlit/discussions)
+              
+We'll get you up and running! 🏆`;
+            } else {
+              comment = `👋 **Welcome to FPL Dashboard!**
+              
+Thank you for your interest in the FPL Dashboard project!
+              
+**Getting Started:**
+- 📖 Check out our [README](https://github.com/thinesrao/fpl-dashboard-streamlit#readme)
+- 🚀 Follow the [Quick Start Guide](https://github.com/thinesrao/fpl-dashboard-streamlit#-quick-start)
+- 💬 Join our [Discussions](https://github.com/thinesrao/fpl-dashboard-streamlit/discussions)
+              
+**Need Help?**
+- 🛠️ Use the "Setup Help" template for configuration issues
+- 🐛 Use the "Bug Report" template for issues
+- ✨ Use the "Feature Request" template for suggestions
+              
+Thanks for being part of the FPL Dashboard community! 🏆⚽`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  welcome-new-pr:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome new PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            
+            const comment = `🎉 **Pull Request Received**
+            
+Thank you for contributing to FPL Dashboard! We appreciate your effort.
+            
+**Review Process:**
+- Our team will review your changes
+- We may request modifications if needed
+- We'll test your changes thoroughly
+- We'll merge once everything looks good
+            
+**Before Review:**
+- ✅ Code follows our style guidelines
+- ✅ No private data is committed
+- ✅ Tests pass locally
+- ✅ Documentation is updated
+            
+**Security Check:**
+- 🔒 No hardcoded league IDs or credentials
+- 🔒 All sensitive data uses configuration system
+- 🔒 Proper error handling implemented
+            
+Thanks for helping improve FPL Dashboard! 🏆⚽`;
+            
+            github.rest.issues.createComment({
+              issue_number: pr.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
