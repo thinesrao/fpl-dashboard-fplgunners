@@ -51,7 +51,8 @@ def get_league_name():
         
         # Fetch league information from FPL API
         league_url = f"https://fantasy.premierleague.com/api/leagues-classic/{CLASSIC_LEAGUE_ID}/standings/"
-        response = requests.get(league_url, timeout=10)
+        headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
+        response = requests.get(league_url, headers=headers, timeout=10)
         
         if response.status_code == 200:
             data = response.json()

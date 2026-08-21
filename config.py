@@ -10,7 +10,7 @@ This file contains all the configuration settings for your FPL dashboard.
 # =============================================================================
 
 # Your Classic League ID (found in the URL when viewing your league)
-CLASSIC_LEAGUE_ID = 164188
+CLASSIC_LEAGUE_ID = 1022594
 
 # Your Head-to-Head League ID (if you have one)
 H2H_LEAGUE_ID = 0
