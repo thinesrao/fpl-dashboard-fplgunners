@@ -238,9 +238,9 @@ All existing computation is untouched.
 2. **Vercel project / domain** — ✅ none yet; the user creates the Vercel project and imports the
    repo **after** the code is complete (§14.3). Domain decided at that point. No Vercel work by Claude.
 3. **Styling** — ✅ **Tailwind CSS v4** with the §9 tokens as CSS variables.
-4. **Cannon logo** — ✅ pursuing higher fidelity to the real artillery-cannon form (angled barrel,
-   chunky 6-spoke wheel, breech knob, muzzle flare, carriage trail); refine against the mockup.
-   Own vector interpretation, not a trace of the club's official artwork.
+4. **Cannon logo** — ✅ use the **original stylized cannon SVG** from the mockup (own vector
+   interpretation, not a trace of the club's official artwork). The higher-fidelity attempt read
+   worse; keep the clean simple mark.
 
 ## 16. Out of scope (computed but hidden)
 
