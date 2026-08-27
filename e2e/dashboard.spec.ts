@@ -17,4 +17,6 @@ test("dashboard: cards, expand, search, plate", async ({ page }) => {
   await expect(rows).toContainText("soo sheng");
   await expect(rows).toContainText("Gunner92");
   await expect(rows).not.toContainText("Steve Strange");
+
+  await expect(page.getByText("JET CHAN")).toBeVisible();
 });
