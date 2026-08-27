@@ -3,16 +3,18 @@ name: FPL Data Pipeline
 
 # Triggers for the workflow
 on:
-  # Run this workflow automatically on a schedule (every day at 8 AM UTC)
+  # Run this workflow automatically on a schedule (hourly)
   schedule:
-    - cron: '0 */6 * * *' # You can customize this. See https://crontab.guru/
-  
+    - cron: '0 * * * *' # You can customize this. See https://crontab.guru/
+
   # This line is ESSENTIAL for the "Run workflow" button to appear
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -32,3 +34,20 @@ jobs:
         run: python3 data_pipeline.py
         env:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Build dashboard snapshot (gated)
+        run: python3 build_snapshot.py
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Commit snapshot if changed
+        run: |
+          if ! git diff --quiet -- data/dashboard.json; then
+            git config user.name "fpl-bot"
+            git config user.email "fpl-bot@users.noreply.github.com"
+            git add data/dashboard.json
+            git commit -m "data: update dashboard snapshot [skip ci]"
+            git push
+          else
+            echo "No snapshot change — nothing to commit."
+          fi
