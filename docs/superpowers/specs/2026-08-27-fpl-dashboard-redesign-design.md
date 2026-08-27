@@ -227,16 +227,20 @@ All existing computation is untouched.
 
 1. Scaffold Next.js app in-repo; build the four components against a checked-in sample `dashboard.json`.
 2. Add JSON emission + commit + gate to the pipeline; verify a real run produces valid JSON.
-3. Deploy to Vercel (root = Next app); confirm auto-deploy on the pipeline's commit.
-4. Point the domain; verify a full gated cycle end-to-end.
+3. **Hand off to Vercel (user).** Once the code is complete, the user creates the Vercel project
+   and imports this GitHub repo (root = Next app). Vercel then auto-deploys on the pipeline's commit.
+4. Point a domain (chosen at that point) and verify a full gated cycle end-to-end.
 5. Retire the Streamlit deployment (keep `app.py` in history).
 
-## 15. Open questions
+## 15. Decisions & open questions
 
-1. **Champion national rank** — manual field vs. API-derived (§7.3). Recommend manual for v1.
-2. **Domain** — new Vercel domain, or move an existing one?
-3. **Tailwind vs CSS Modules** — decide in the implementation plan; either fits the token system.
-4. **Cannon logo** — the current SVG is a clean stylized mark; confirm it's close enough or refine.
+1. **Champion national rank** — ✅ **manual** field in `champions.json`, updated once per season.
+2. **Vercel project / domain** — ✅ none yet; the user creates the Vercel project and imports the
+   repo **after** the code is complete (§14.3). Domain decided at that point. No Vercel work by Claude.
+3. **Styling** — ✅ **Tailwind CSS v4** with the §9 tokens as CSS variables.
+4. **Cannon logo** — ✅ pursuing higher fidelity to the real artillery-cannon form (angled barrel,
+   chunky 6-spoke wheel, breech knob, muzzle flare, carriage trail); refine against the mockup.
+   Own vector interpretation, not a trace of the club's official artwork.
 
 ## 16. Out of scope (computed but hidden)
 
