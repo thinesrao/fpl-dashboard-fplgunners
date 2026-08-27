@@ -21,7 +21,7 @@ function Card({
   big,
   name,
   meta,
-  disambiguate = false,
+  testId,
   children,
 }: {
   accent: Accent;
@@ -30,11 +30,14 @@ function Card({
   big: number;
   name: string;
   meta: string;
-  disambiguate?: boolean;
+  testId: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-[18px] border border-line bg-surface p-[18px_19px]">
+    <div
+      data-testid={testId}
+      className="relative overflow-hidden rounded-[18px] border border-line bg-surface p-[18px_19px]"
+    >
       <div
         className={`pointer-events-none absolute -right-[45px] -top-[45px] h-[150px] w-[150px] rounded-full opacity-20 blur-[32px] ${GLOW_BG[accent]}`}
       />
@@ -47,13 +50,7 @@ function Card({
       >
         {big}
       </div>
-      <div className="text-[17px] font-bold leading-[1.15]">
-        {name}
-        {/* Zero-width space: in early-season data the same manager can top every
-            hero stat at once (identical name string in all three cards). It's
-            invisible on screen but keeps each card's DOM text distinguishable. */}
-        {disambiguate && "​"}
-      </div>
+      <div className="text-[17px] font-bold leading-[1.15]">{name}</div>
       <div className="mt-[2px] text-[12.5px] text-muted">{meta}</div>
       {children}
     </div>
@@ -73,6 +70,7 @@ export default function HeroCards({ data }: { data: Dashboard }) {
         big={leader.total}
         name={leader.manager}
         meta={`${leader.team} · ${meta.managerCount} managers chasing`}
+        testId="hero-leader"
       >
         <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gold/14 px-[9px] py-1 font-display text-[10px] font-extrabold uppercase tracking-[.06em] text-gold">
           <span
@@ -93,7 +91,7 @@ export default function HeroCards({ data }: { data: Dashboard }) {
         big={highestGw.score}
         name={highestGw.manager}
         meta={`${highestGw.team} · achieved in Gameweek ${highestGw.gw}`}
-        disambiguate
+        testId="hero-highest"
       />
 
       <Card
@@ -103,7 +101,7 @@ export default function HeroCards({ data }: { data: Dashboard }) {
         big={mostMotw.wins}
         name={mostMotw.manager}
         meta={`${mostMotw.team} · last won in Gameweek ${mostMotw.lastWinGw}`}
-        disambiguate
+        testId="hero-motw"
       />
     </section>
   );
