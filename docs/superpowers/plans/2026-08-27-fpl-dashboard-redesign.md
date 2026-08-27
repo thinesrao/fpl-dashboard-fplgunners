@@ -353,7 +353,7 @@ describe("selectAngle", () => {
 describe("formatDeadlineMYT", () => {
   it("renders UTC as MYT (+8)", () => {
     // 2026-10-24T17:30:00Z -> 2026-10-25 01:30 MYT
-    expect(formatDeadlineMYT("2026-10-24T17:30:00Z")).toBe("Sat 25 Oct · 01:30 MYT");
+    expect(formatDeadlineMYT("2026-10-24T17:30:00Z")).toBe("Sun 25 Oct · 01:30 MYT");
   });
 });
 
