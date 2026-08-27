@@ -28,6 +28,8 @@
   --color-mint-ink: var(--mint-ink);
   --color-gold: var(--gold);
   --color-hot: var(--hot);
+  --color-up: var(--up);
+  --color-down: var(--down);
   --font-display: var(--font-archivo);
   --font-body: var(--font-barlow);
   --font-serif: var(--font-playfair);
