@@ -1,0 +1,317 @@
+<title>FPL Dashboard Palettes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+  /* ---------- outer page chrome (theme-aware neutral) ---------- */
+  :root{
+    --page-bg:#e9e6df; --page-surface:#f6f4ef; --page-ink:#20242c; --page-muted:#6a6f7a;
+    --page-line:#d5d1c8; --page-accent:#1f9d57;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --page-bg:#0c0d10; --page-surface:#15171c; --page-ink:#e8eaee; --page-muted:#8b909b;
+      --page-line:#262a31; --page-accent:#2bfca4;
+    }
+  }
+  :root[data-theme="dark"]{
+    --page-bg:#0c0d10; --page-surface:#15171c; --page-ink:#e8eaee; --page-muted:#8b909b;
+    --page-line:#262a31; --page-accent:#2bfca4;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--page-bg); color:var(--page-ink);
+    font-family:"Barlow",system-ui,sans-serif; font-variant-numeric:tabular-nums;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:40px 20px 80px}
+
+  .page-head{margin-bottom:36px}
+  .kicker{font-family:"Archivo";font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    font-size:12px;color:var(--page-accent)}
+  .page-head h1{font-family:"Archivo";font-weight:900;font-size:clamp(30px,5vw,50px);
+    line-height:.98;letter-spacing:-.01em;margin:.25em 0 .35em;text-wrap:balance}
+  .page-head p{max-width:64ch;color:var(--page-muted);font-size:16px;line-height:1.55;margin:0}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:20px;font-size:13.5px;color:var(--page-muted)}
+  .legend b{color:var(--page-ink);font-weight:600}
+
+  /* ---------- a palette "screen" ---------- */
+  .screen{
+    background:var(--bg); color:var(--text); border-radius:20px; overflow:hidden;
+    border:1px solid var(--line); margin-top:34px;
+    box-shadow:0 24px 60px -30px rgba(0,0,0,.5);
+  }
+  .screen-label{
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;
+    padding:20px 24px 0;
+  }
+  .screen-label .name{font-family:"Archivo";font-weight:900;font-size:22px;letter-spacing:.01em}
+  .screen-label .tag{font-family:"Archivo";font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+    font-size:11px;color:var(--primary)}
+  .screen-label .desc{color:var(--muted);font-size:13.5px;flex-basis:100%;max-width:70ch;line-height:1.5}
+  .swatches{display:flex;gap:0;padding:14px 24px 0}
+  .swatches i{width:44px;height:24px;display:block;border-radius:5px;margin-right:7px;
+    border:1px solid rgba(255,255,255,.14)}
+
+  .board{padding:22px 24px 26px;display:grid;gap:16px;grid-template-columns:1.35fr 1fr}
+  @media(max-width:760px){.board{grid-template-columns:1fr}}
+
+  /* header inside screen */
+  .app-head{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;
+    align-items:center;gap:12px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+  .league{display:flex;align-items:center;gap:12px}
+  .crest{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+    background:var(--primary);color:var(--primary-ink);font-family:"Archivo";font-weight:900;font-size:19px}
+  .league h2{font-family:"Archivo";font-weight:800;font-size:19px;margin:0;letter-spacing:.01em}
+  .league .sub{color:var(--muted);font-size:12.5px;margin-top:1px}
+  .live{display:inline-flex;align-items:center;gap:7px;font-family:"Archivo";font-weight:700;
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--hot);
+    background:color-mix(in srgb,var(--hot) 14%,transparent);padding:6px 11px;border-radius:999px}
+  .live .dot{width:7px;height:7px;border-radius:50%;background:var(--hot);
+    box-shadow:0 0 0 0 var(--hot);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--hot) 70%,transparent)}
+    70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  @media(prefers-reduced-motion:reduce){.live .dot{animation:none}}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .panel-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .panel-h .t{font-family:"Archivo";font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+  .panel-h .m{color:var(--muted);font-size:12px}
+
+  /* leaderboard */
+  .row{display:grid;grid-template-columns:26px 1fr auto auto;align-items:center;gap:12px;
+    padding:9px 0;border-top:1px solid var(--line)}
+  .row:first-of-type{border-top:0}
+  .row .rk{font-family:"Archivo";font-weight:900;font-size:16px;color:var(--muted);text-align:center}
+  .row.lead .rk{color:var(--gold)}
+  .who .n{font-weight:600;font-size:14.5px;line-height:1.15}
+  .who .team{color:var(--muted);font-size:12px}
+  .spark{width:60px;height:22px;display:block}
+  .pts{font-family:"Archivo";font-weight:800;font-size:16px;text-align:right;min-width:42px}
+  .pts .u{font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
+  .mv{font-size:11px;font-weight:700;display:inline-flex;gap:2px;align-items:center}
+  .up{color:var(--up)} .down{color:var(--down)} .new{color:var(--gold)}
+
+  /* GW hero */
+  .hero{background:
+      radial-gradient(120% 120% at 100% 0%, color-mix(in srgb,var(--primary) 22%,transparent), transparent 60%),
+      var(--surface);
+    border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:2px}
+  .hero .lab{font-family:"Archivo";font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .hero .big{font-family:"Archivo";font-weight:900;font-size:clamp(38px,6vw,52px);line-height:1;color:var(--primary);letter-spacing:-.02em}
+  .hero .nm{font-weight:700;font-size:17px;margin-top:4px}
+  .hero .meta{color:var(--muted);font-size:12.5px}
+
+  /* trophy cabinet */
+  .cabinet{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:760px){.cabinet{grid-template-columns:1fr}}
+  .trophy{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px;
+    position:relative;overflow:hidden}
+  .trophy::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--gold)}
+  .trophy .ico{font-size:20px}
+  .trophy .aw{font-family:"Archivo";font-weight:800;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--muted);margin:8px 0 2px}
+  .trophy .hold{font-weight:700;font-size:16px}
+  .trophy .val{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+  .trophy .val .v{font-family:"Archivo";font-weight:900;font-size:22px;color:var(--primary)}
+  .trophy .val .gap{font-size:11.5px;color:var(--muted)}
+
+  /* bump chart */
+  .bump{grid-column:1/-1;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .bump svg{width:100%;height:120px;display:block}
+  .bump .gl{stroke:var(--line);stroke-width:1}
+  .bump .axis{fill:var(--muted);font-size:10px;font-family:"Barlow"}
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="kicker">Design Review · Colour Direction</div>
+    <h1>Four ways the dashboard could feel</h1>
+    <p>Same layout, same real data (your league, GW1, 126 managers) — only the palette changes,
+       so you're judging colour and mood, not four different designs. Pick one to take forward,
+       or mix (e.g. "A's greens, C's readability"). Movement arrows and form lines are shown
+       mid-season style to demonstrate the components; today everything is GW1.</p>
+    <div class="legend">
+      <span><b>A</b> Pitch Broadcast</span>
+      <span><b>B</b> Electric Mint</span>
+      <span><b>C</b> Almanac (light)</span>
+      <span><b>D</b> Gunners</span>
+    </div>
+  </header>
+
+  <!-- ============ PALETTE A: PITCH BROADCAST ============ -->
+  <section class="screen" style="
+    --bg:#0a1f14; --surface:#0f2a1b; --line:#1c3d29; --text:#eaf3ec; --muted:#88ad97;
+    --primary:#1fe05c; --primary-ink:#062610; --gold:#f5c542; --hot:#ff5a4d;
+    --up:#48e07a; --down:#ff6b6b;">
+    <div class="screen-label">
+      <span class="name">A · Pitch Broadcast</span>
+      <span class="tag">Floodlit · Sporty</span>
+      <span class="desc">Deep floodlit-night ground, vibrant grass green, warm gold for silverware.
+        Saturday-afternoon-on-Sky energy. Reads "football" instantly.</span>
+    </div>
+    <div class="swatches">
+      <i style="background:#0a1f14"></i><i style="background:#0f2a1b"></i>
+      <i style="background:#1fe05c"></i><i style="background:#f5c542"></i>
+      <i style="background:#ff5a4d"></i><i style="background:#eaf3ec"></i>
+    </div>
+    <div class="board" data-board></div>
+  </section>
+
+  <!-- ============ PALETTE B: ELECTRIC MINT ============ -->
+  <section class="screen" style="
+    --bg:#08090c; --surface:#12141a; --line:#232733; --text:#e7ecef; --muted:#7c8794;
+    --primary:#2bfca4; --primary-ink:#04120b; --gold:#ffb020; --hot:#ff3dae;
+    --up:#2bfca4; --down:#ff5f7e;">
+    <div class="screen-label">
+      <span class="name">B · Electric Mint</span>
+      <span class="tag">Dark · Esports</span>
+      <span class="desc">Your current mint, made intentional: true near-black, electric mint primary,
+        a hot magenta reserved for "live / rising" signals. Modern, high-energy, evolves what you have.</span>
+    </div>
+    <div class="swatches">
+      <i style="background:#08090c"></i><i style="background:#12141a"></i>
+      <i style="background:#2bfca4"></i><i style="background:#ff3dae"></i>
+      <i style="background:#ffb020"></i><i style="background:#e7ecef"></i>
+    </div>
+    <div class="board" data-board></div>
+  </section>
+
+  <!-- ============ PALETTE C: ALMANAC ============ -->
+  <section class="screen" style="
+    --bg:#f2ece0; --surface:#fbf8f1; --line:#e0d8c8; --text:#1c2434; --muted:#736a58;
+    --primary:#1f7a46; --primary-ink:#ffffff; --gold:#b8892b; --hot:#c0392b;
+    --up:#1f7a46; --down:#c0392b;">
+    <div class="screen-label">
+      <span class="name">C · Almanac</span>
+      <span class="tag">Light · Editorial</span>
+      <span class="desc">Warm cream and ink-navy, gold for winners, deep-green primary. Reads like a
+        premium sports record-book. Deliberately unlike every dark FPL clone, ages well, most readable in daylight.</span>
+    </div>
+    <div class="swatches">
+      <i style="background:#f2ece0;border-color:#0002"></i><i style="background:#fbf8f1;border-color:#0002"></i>
+      <i style="background:#1f7a46"></i><i style="background:#b8892b"></i>
+      <i style="background:#c0392b"></i><i style="background:#1c2434"></i>
+    </div>
+    <div class="board" data-board></div>
+  </section>
+
+  <!-- ============ PALETTE D: GUNNERS ============ -->
+  <section class="screen" style="
+    --bg:#121418; --surface:#1b1e25; --line:#2b2f38; --text:#eceef1; --muted:#8a909b;
+    --primary:#ef0107; --primary-ink:#ffffff; --gold:#dba111; --hot:#ff4d4f;
+    --up:#3fd07a; --down:#ff6b6b;">
+    <div class="screen-label">
+      <span class="name">D · Gunners</span>
+      <span class="tag">Club Identity</span>
+      <span class="desc">Lean into the league name — charcoal, Arsenal red, gold. Tribal, "our league has a crest."
+        Strongest identity, but ties the look to one club's colours.</span>
+    </div>
+    <div class="swatches">
+      <i style="background:#121418"></i><i style="background:#1b1e25"></i>
+      <i style="background:#ef0107"></i><i style="background:#dba111"></i>
+      <i style="background:#ff4d4f"></i><i style="background:#eceef1"></i>
+    </div>
+    <div class="board" data-board></div>
+  </section>
+</div>
+
+<script>
+  // Real league data
+  const LEAGUE = "槍迷之家超級聯賽";
+  const managers = [
+    {rk:1, n:"Steve Strange", team:"The Marvel 11", pts:96, mv:"new", form:[38,52,49,61,58,72]},
+    {rk:2, n:"Liang Arsenal", team:"liang", pts:86, mv:"up", d:2, form:[44,41,55,48,63,60]},
+    {rk:3, n:"soo sheng", team:"Gunner92", pts:83, mv:"down", d:1, form:[59,47,52,44,50,55]},
+    {rk:4, n:"Cheong Chee Poi", team:"northlondonforever94", pts:82, mv:"up", d:3, form:[33,45,40,58,54,66]},
+    {rk:5, n:"Yuen Khai Khoo", team:"Ødeparfum", pts:81, mv:"down", d:2, form:[51,49,46,43,47,42]},
+  ];
+  const trophies = [
+    {ico:"🥇", aw:"Golden Boot", hold:"Steve Strange", v:"11", u:"goals", gap:"2 ahead"},
+    {ico:"🅰️", aw:"Playmaker", hold:"soo sheng", v:"9", u:"assists", gap:"1 ahead"},
+    {ico:"🚀", aw:"Best Gameweek", hold:"Liang Arsenal", v:"96", u:"pts", gap:"GW1"},
+  ];
+
+  function spark(pts, cls){
+    const w=60,h=22,max=Math.max(...pts),min=Math.min(...pts),rng=(max-min)||1;
+    const step=w/(pts.length-1);
+    const d=pts.map((p,i)=>`${i*step},${h-2-((p-min)/rng)*(h-4)}`).join(" ");
+    const lastX=(pts.length-1)*step, lastY=h-2-((pts[pts.length-1]-min)/rng)*(h-4);
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" fill="none" aria-hidden="true">
+      <polyline points="${d}" stroke="var(${cls})" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+      <circle cx="${lastX.toFixed(1)}" cy="${lastY.toFixed(1)}" r="2.2" fill="var(${cls})"/></svg>`;
+  }
+  function mv(m){
+    if(m.mv==="up")   return `<span class="mv up">▲ ${m.d}</span>`;
+    if(m.mv==="down") return `<span class="mv down">▼ ${m.d}</span>`;
+    return `<span class="mv new">● NEW</span>`;
+  }
+
+  const bumpSVG = (()=> {
+    // 5 managers over 6 GWs — illustrative crossing lines (rank 1 top)
+    const cols=["var(--gold)","var(--primary)","var(--up)","var(--muted)","var(--hot)"];
+    const ranks=[
+      [3,2,2,1,1,1],[5,4,3,3,2,2],[1,1,4,4,4,3],[4,5,5,2,3,4],[2,3,1,5,5,5]
+    ];
+    const W=680,H=120,padX=30,padTop=12,padBot=22,step=(W-padX*2)/5,rowH=(H-padTop-padBot)/4;
+    let g="";
+    for(let r=0;r<5;r++){const y=padTop+r*rowH;g+=`<line class="gl" x1="${padX}" y1="${y}" x2="${W-padX}" y2="${y}"/>`;}
+    let gw="";for(let c=0;c<6;c++){gw+=`<text class="axis" x="${padX+c*step}" y="${H-6}" text-anchor="middle">GW${c+1}</text>`;}
+    let lines="";
+    ranks.forEach((rr,i)=>{
+      const pts=rr.map((rank,c)=>`${padX+c*step},${padTop+(rank-1)*rowH}`).join(" ");
+      const lx=padX+5*step, ly=padTop+(rr[5]-1)*rowH;
+      lines+=`<polyline points="${pts}" fill="none" stroke="${cols[i]}" stroke-width="${i===0?3:2}" stroke-linecap="round" stroke-linejoin="round" opacity="${i===0?1:.8}"/>
+        <circle cx="${lx}" cy="${ly}" r="${i===0?4:3}" fill="${cols[i]}"/>`;
+    });
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${g}${gw}${lines}</svg>`;
+  })();
+
+  const boardHTML = `
+    <div class="app-head">
+      <div class="league">
+        <div class="crest">槍</div>
+        <div>
+          <h2>🏆 ${LEAGUE} 🏆</h2>
+          <div class="sub">Classic League · 126 managers · updated after GW1</div>
+        </div>
+      </div>
+      <span class="live"><span class="dot"></span>Live GW2</span>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><span class="t">The Title Race</span><span class="m">Top 5 of 126 · form (L6)</span></div>
+      ${managers.map(m=>`
+        <div class="row ${m.rk===1?'lead':''}">
+          <div class="rk">${m.rk}</div>
+          <div class="who"><div class="n">${m.n} ${mv(m)}</div><div class="team">${m.team}</div></div>
+          ${spark(m.form, m.rk===1?'--gold':'--primary')}
+          <div class="pts">${m.pts}<span class="u">pts</span></div>
+        </div>`).join("")}
+    </div>
+
+    <div class="hero">
+      <div class="lab">⚡ Manager of the Week · GW1</div>
+      <div class="big">96</div>
+      <div class="nm">Steve Strange</div>
+      <div class="meta">The Marvel 11 · +10 clear of the field</div>
+    </div>
+
+    <div class="cabinet">
+      ${trophies.map(t=>`
+        <div class="trophy">
+          <div class="ico">${t.ico}</div>
+          <div class="aw">${t.aw}</div>
+          <div class="hold">${t.hold}</div>
+          <div class="val"><span class="v">${t.v}</span><span class="gap">${t.u} · ${t.gap}</span></div>
+        </div>`).join("")}
+    </div>
+
+    <div class="bump">
+      <div class="panel-h"><span class="t">Season Story · League Position</span><span class="m">top 5 · who's climbing</span></div>
+      ${bumpSVG}
+    </div>`;
+
+  document.querySelectorAll("[data-board]").forEach(el=>{ el.innerHTML = boardHTML; });
+</script>

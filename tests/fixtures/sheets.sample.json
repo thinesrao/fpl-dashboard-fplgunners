@@ -1,0 +1,24 @@
+{
+  "classic_league_standings": [
+    {"Standings": 1, "Team": "Emirates Marksmen", "Manager": "Alex Wong", "Total": 78, "GW1": 78},
+    {"Standings": 2, "Team": "Highbury Heroes", "Manager": "Bella Tan", "Total": 75, "GW1": 75},
+    {"Standings": 3, "Team": "North Bank Ballers", "Manager": "Chris Lim", "Total": 70, "GW1": 70},
+    {"Standings": 4, "Team": "Gooner Galacticos", "Manager": "Dana Ong", "Total": 68, "GW1": 68},
+    {"Standings": 5, "Team": "Cannon Fodder FC", "Manager": "Evan Goh", "Total": 65, "GW1": 65}
+  ],
+  "highest_gw_score": [
+    {"Standings": 1, "Team": "Emirates Marksmen", "Manager": "Alex Wong", "Score": 78, "Achieved_GW": 1},
+    {"Standings": 2, "Team": "Highbury Heroes", "Manager": "Bella Tan", "Score": 75, "Achieved_GW": 1},
+    {"Standings": 3, "Team": "North Bank Ballers", "Manager": "Chris Lim", "Score": 70, "Achieved_GW": 1}
+  ],
+  "most_weekly_wins": [
+    {"Standings": 1, "Team": "Emirates Marksmen", "Manager": "Alex Wong", "Total_Wins": 1, "Last_Win_GW": 1},
+    {"Standings": 2, "Team": "Highbury Heroes", "Manager": "Bella Tan", "Total_Wins": 0, "Last_Win_GW": 0}
+  ],
+  "weekly_manager_log": [
+    {"Gameweek": 1, "Team": "Emirates Marksmen", "Manager": "Alex Wong", "Score": 78}
+  ],
+  "metadata": [
+    {"last_finished_gw": 1, "last_updated_utc": "2026-08-25T12:00:00Z"}
+  ]
+}
