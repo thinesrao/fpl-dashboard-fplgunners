@@ -7,7 +7,31 @@ A comprehensive Fantasy Premier League dashboard that provides detailed analytic
 ![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## ✨ Features
+## 🆕 New Next.js dashboard (Vercel)
+
+This repo is migrating to a new dashboard built with **Next.js**, deployed on
+**Vercel**. It covers the same standings/awards/champion-plate view as the
+Streamlit app, plus a gameweek report image generator (poster + adaptive
+caption + share links).
+
+The new app is fed by `data/dashboard.json` (and `data/champions.json`),
+committed to this repo by a **gated, hourly GitHub Action**
+(`.github/workflows/run_fpl_pipeline.yml`): it runs the existing
+`data_pipeline.py`, then a snapshot builder (`build_snapshot.py`) that only
+writes a new `data/dashboard.json` when a new gameweek has gone final. Each
+commit to `data/dashboard.json` triggers an auto-deploy on Vercel, so the
+dashboard's data is always driven by a plain committed JSON file rather than
+a live database.
+
+The **Streamlit app below is being retired** in favor of the Next.js
+dashboard — its setup instructions are kept for now as a reference, but new
+work should target the Next.js app.
+
+See **[docs/DEPLOY.md](docs/DEPLOY.md)** for the full Vercel setup and
+handoff checklist (domain config, GitHub Actions permissions, verifying the
+data → commit → deploy loop, and known limitations).
+
+## ✨ Features (Streamlit app)
 
 ### 📊 **League Analytics**
 - **Classic League Standings** - Track overall performance
@@ -40,7 +64,7 @@ The dashboard includes 15+ custom awards to make your mini-league more competiti
 
 📖 **For detailed award explanations, see [AWARDS_GUIDE.md](AWARDS_GUIDE.md)**
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Streamlit app — being retired)
 
 ### Option 1: Use Template (Recommended)
 1. Click **"Use this template"** button on GitHub
