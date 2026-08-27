@@ -20,6 +20,7 @@ a port of the existing 3-tab table dump.
 - **Keep the data pipeline's logic intact** — reuse the existing FPL → Google Sheets computation.
 - **Smarter refresh** that reacts to when gameweeks actually settle, instead of a blind 6-hour cron.
 - Feature the league's real prize — the **engraved Champion's Plate** — as the emotional anchor.
+- Provide a **Gameweek Report generator** (§16) so the admin can post the Facebook 戰報 in one click.
 
 ## 3. Non-goals (v1)
 
@@ -193,14 +194,21 @@ Design already reserves the pill and `meta.liveGw`. Not built in v1.
 app/
   layout.tsx            fonts, tokens, metadata
   page.tsx              server component; imports data, composes sections
+  report/
+    page.tsx            report generator (poster preview + caption + share/copy)
+    opengraph-image.tsx next/og ImageResponse — the poster PNG (CJK font embedded)
 components/
   Header.tsx            cannon logo + titles + (Phase 2) live pill
   HeroCards.tsx         3 status cards
   Standings.tsx         'use client' — search + expand + plate badge
   ChampionPlate.tsx     SVG medallion (props: champion)
   CannonLogo.tsx        inline SVG mark
+  report/
+    Poster.tsx          the shareable card (shared by page + og image)
+    Caption.tsx         'use client' — variant selector, copy, Web Share
 lib/
   data.ts               load + zod-validate dashboard.json / champions.json
+  report.ts             caption variants + angle auto-selection + MYT deadline format
 data/
   dashboard.json        pipeline output (committed)
   champions.json        manual
@@ -220,6 +228,9 @@ All existing computation is untouched.
 - **Component:** Standings search filters correctly, expand/collapse toggles, ties render, empty state.
 - **E2E (Playwright):** page loads, three cards present, expand reveals 20, search finds a manager,
   plate renders champion name.
+- **Report:** `lib/report.ts` angle-selection (each flag combination picks the right variant; priority
+  order holds), MYT deadline formatting, caption assembly; `opengraph-image` renders without error and
+  embeds the CJK font.
 - **Pipeline:** unit-test the JSON serializer against a Sheets fixture; test the gate (no-new-data
   → no commit; new-data → commit).
 
@@ -242,7 +253,52 @@ All existing computation is untouched.
    interpretation, not a trace of the club's official artwork). The higher-fidelity attempt read
    worse; keep the clean simple mark.
 
-## 16. Out of scope (computed but hidden)
+## 16. Feature — Gameweek Report generator (Facebook 戰報)
+
+A `/report` page that turns the latest gameweek into a ready-to-post Facebook update: a shareable
+**poster graphic** + an **adaptive Chinese caption**. Reference mockup published as an artifact.
+
+### Content (all data-driven except two config values)
+- Header: league name + `seasonLabel` ("Season 6") + GW number.
+- Top 5 of the standings (name + total).
+- Honours: **單週最高分** (`weeklyTop`) and **賽季最高分紀錄** (`highestGw`).
+- Next deadline: `nextGw.number` + `nextGw.deadlineUtc` converted to **MYT (UTC+8)** and formatted
+  (e.g. "Sat 25 Oct · 01:30 MYT"). Auto-generated.
+- Dashboard URL (the new Vercel site).
+
+### Adaptive caption
+The pipeline emits **week signals** (`report.flags`): `recordBroken`, `leaderChanged` (+`prevLeader`),
+`gapToSecond`, `weeklyTopScore`. The generator auto-selects the highest-priority applicable angle —
+🔥 新紀錄 › 👑 榜首易主 › ⚔️ 競爭白熱化 › 💥 神級單週 › 🏆 標準戰報 — which rewrites the intro
+paragraph and the poster headline. The user can override the angle with a chip selector. All five
+variant strings live in the frontend; only the signals come from the pipeline.
+
+### Poster image
+Rendered server-side with **`next/og` `ImageResponse`** at e.g. `/report/opengraph-image` (or an API
+route), with a CJK font (Noto Sans TC) embedded so Chinese renders crisply. 4:5 ratio for social.
+"⬇ Image" downloads the PNG.
+
+### Sharing (honest scope)
+"📤 Share" uses the **Web Share API** (`navigator.share` with the poster file) to open the phone's
+native share sheet → user picks Facebook → the target group. **Limitation:** Facebook commonly strips
+pre-filled caption text when an image is shared (esp. iOS), and neither the group nor an auto-post can
+be selected programmatically. Mitigation: the app **copies the caption to the clipboard at share time**
+so the user pastes it in the composer. Desktop (no `navigator.share`) falls back to Copy + Download.
+
+### Config additions (manual, per season)
+`meta.seasonLabel` ("Season 6"). Deadline text is auto-derived; no manual entry.
+
+### Data contract additions
+```jsonc
+"meta": { …, "seasonLabel": "Season 6",
+          "nextGw": { "number": 9, "deadlineUtc": "2026-10-25T17:30:00Z" } },
+"weeklyTop": { "manager": "Danny Chong", "team": "…", "score": 89, "gw": 8 },
+"report": { "flags": { "recordBroken": false, "leaderChanged": true,
+            "prevLeader": "Liang Arsenal", "gapToSecond": 14, "weeklyTopScore": 89 } }
+```
+`weeklyTop` derives from the max single-GW score this gameweek (from the weekly log / live-final data).
+
+## 17. Out of scope (computed but hidden)
 
 H2H standings, monthly winners (classic + H2H), cup winner, and all ~20 special awards
 (golden boot, playmaker, golden glove, best GK/DEF/MID/FWD, best VC, transfer/bench/dream-team/
