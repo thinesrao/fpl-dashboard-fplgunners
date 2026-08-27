@@ -58,7 +58,7 @@ export default function Poster({ data, angle }: { data: Dashboard; angle: AngleI
         <div data-testid="poster-top5">
           {top5.map((row, i) => (
             <div
-              key={row.entryId}
+              key={row.entryId || row.rank}
               className="grid grid-cols-[26px_1fr_auto] items-center gap-2.5 py-[5px]"
             >
               <div className="text-center text-base">{MEDALS[i]}</div>

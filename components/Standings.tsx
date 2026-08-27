@@ -147,7 +147,7 @@ export default function Standings({
 
       <div>
         {visibleRows.map((row) => (
-          <Row key={row.entryId} row={row} />
+          <Row key={row.entryId || row.rank} row={row} />
         ))}
       </div>
 
