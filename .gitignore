@@ -85,3 +85,22 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Node.js / Next.js
+node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+/coverage
+/.next/
+/out/
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+
+# env files (can opt-in for committing if needed)
+.env*
