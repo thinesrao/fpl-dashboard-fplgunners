@@ -448,9 +448,12 @@ def main():
     gw_scores_wide = gw_scores_df.pivot(index='manager_id', columns='gameweek', values='score').fillna(0).astype(int)
     gw_scores_wide.columns = [f"GW{col}" for col in gw_scores_wide.columns]
         
-    classic_standings_df = pd.DataFrame(classic_league_data['standings']['results'])[['rank', 'entry_name', 'player_name', 'total', 'entry']]
-    classic_standings_df.rename(columns={'rank': 'Standings', 'entry_name': 'Team', 'player_name': 'Manager', 'total': 'Total', 'entry': 'manager_id'}, inplace=True)
-    classic_standings_df = classic_standings_df.merge(gw_scores_wide, on='manager_id', how='left').drop(columns=['manager_id'])
+    classic_standings_df = pd.DataFrame(classic_league_data['standings']['results'])[['rank', 'last_rank', 'entry_name', 'player_name', 'total', 'entry']]
+    classic_standings_df.rename(columns={'rank': 'Standings', 'last_rank': 'Last_Rank', 'entry_name': 'Team', 'player_name': 'Manager', 'total': 'Total', 'entry': 'manager_id'}, inplace=True)
+    classic_standings_df = classic_standings_df.merge(gw_scores_wide, on='manager_id', how='left')
+    # Keep the FPL entry id (as Entry_ID) and the previous-gameweek rank
+    # (Last_Rank) so the dashboard can render movement arrows and stable keys.
+    classic_standings_df.rename(columns={'manager_id': 'Entry_ID'}, inplace=True)
     worksheets_to_write["classic_league_standings"] = classic_standings_df
     
     if h2h_active:

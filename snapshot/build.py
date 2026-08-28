@@ -9,10 +9,10 @@ what makes it testable with static fixtures (see tests/test_build.py).
 
 Real sheet column headers were confirmed by reading `data_pipeline.py`'s
 `worksheets_to_write[...]` DataFrame construction (not guessed):
-  - classic_league_standings: Standings, Team, Manager, Total, GW1..GWn
-    (data_pipeline.py lines ~451-454; the `entry`/manager_id column is
-    dropped after the merge on line 453, so no entry id survives into the
-    sheet).
+  - classic_league_standings: Standings, Last_Rank, Team, Manager, Total,
+    GW1..GWn, Entry_ID (data_pipeline.py lines ~451-456; Last_Rank is the
+    FPL `last_rank` for movement arrows, Entry_ID is the manager entry id
+    kept after the merge).
   - highest_gw_score: Standings, Team, Manager, Score, Achieved_GW
     (data_pipeline.py lines 422, 429-431).
   - most_weekly_wins: Standings, Team, Manager, Total_Wins, Last_Win_GW
@@ -75,17 +75,13 @@ def _build_standings(rows, last_finished_gw):
     standings = [
         {
             "rank": _num(row.get("Standings"), 0),
-            # data_pipeline.py's classic_league_standings sheet has no
-            # previous-rank column today. Accept one defensively (in case a
-            # future pipeline revision adds it) and default to 0 per the
-            # task-15 brief ("lastRank via FPL last_rank if present else 0").
-            "lastRank": _num(row.get("last_rank", row.get("Last_Rank", 0)), 0),
-            # KNOWN LIMITATION: no manager/entry id is written to
-            # classic_league_standings by data_pipeline.py (the `entry`
-            # column is dropped after the merge — see module docstring), so
-            # entryId cannot be derived from the given inputs and defaults
-            # to 0. Revisit if the frontend needs routing/keys by entry id.
-            "entryId": _num(row.get("entry", row.get("EntryId", 0)), 0),
+            # Movement vs the previous gameweek: data_pipeline.py writes the
+            # FPL `last_rank` into the Last_Rank column. 0 means "new this
+            # season" (the frontend renders it as NEW).
+            "lastRank": _num(row.get("Last_Rank", row.get("last_rank", 0)), 0),
+            # Manager's FPL entry id (Entry_ID column, written by
+            # data_pipeline.py) — used as a stable React key.
+            "entryId": _num(row.get("Entry_ID", row.get("entry", 0)), 0),
             "manager": row.get("Manager", ""),
             "team": row.get("Team", ""),
             "gwPoints": _num(row.get(gw_key), 0),
