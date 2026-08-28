@@ -6,7 +6,7 @@
     "seasonLabel": "Season 7",
     "managerCount": 126,
     "lastFinishedGw": 1,
-    "lastUpdatedUtc": "2026-08-27T21:40:00Z",
+    "lastUpdatedUtc": "2026-08-28T14:24:39Z",
     "liveGw": null,
     "nextGw": {
       "number": 2,
@@ -17,7 +17,7 @@
     {
       "rank": 1,
       "lastRank": 0,
-      "entryId": 4778037,
+      "entryId": 1763686,
       "manager": "Steve Strange",
       "team": "The Marvel 11",
       "gwPoints": 96,
@@ -26,7 +26,7 @@
     {
       "rank": 2,
       "lastRank": 0,
-      "entryId": 1,
+      "entryId": 70837,
       "manager": "Liang Arsenal",
       "team": "liang",
       "gwPoints": 86,
@@ -35,7 +35,7 @@
     {
       "rank": 3,
       "lastRank": 0,
-      "entryId": 2,
+      "entryId": 649855,
       "manager": "soo sheng",
       "team": "Gunner92",
       "gwPoints": 83,
@@ -44,7 +44,7 @@
     {
       "rank": 4,
       "lastRank": 0,
-      "entryId": 3,
+      "entryId": 8416231,
       "manager": "Cheong Chee Poi",
       "team": "northlondonforever94",
       "gwPoints": 82,
@@ -53,11 +53,1100 @@
     {
       "rank": 5,
       "lastRank": 0,
-      "entryId": 4,
+      "entryId": 22606,
       "manager": "Yuen Khai Khoo",
       "team": "Ødeparfum",
       "gwPoints": 81,
       "total": 81
+    },
+    {
+      "rank": 6,
+      "lastRank": 0,
+      "entryId": 2361956,
+      "manager": "TL T",
+      "team": "Dink Synergy",
+      "gwPoints": 79,
+      "total": 79
+    },
+    {
+      "rank": 7,
+      "lastRank": 0,
+      "entryId": 714627,
+      "manager": "TatYun Lee",
+      "team": "TatYun's Team",
+      "gwPoints": 74,
+      "total": 74
+    },
+    {
+      "rank": 7,
+      "lastRank": 0,
+      "entryId": 714948,
+      "manager": "andy Yap",
+      "team": "Arsenal EPL champ 26",
+      "gwPoints": 74,
+      "total": 74
+    },
+    {
+      "rank": 7,
+      "lastRank": 0,
+      "entryId": 5954775,
+      "manager": "Jason Chew",
+      "team": "我廠就係咁L Firm",
+      "gwPoints": 74,
+      "total": 74
+    },
+    {
+      "rank": 10,
+      "lastRank": 0,
+      "entryId": 2023866,
+      "manager": "Dan Ye Sheng",
+      "team": "Mamadueke",
+      "gwPoints": 73,
+      "total": 73
+    },
+    {
+      "rank": 11,
+      "lastRank": 0,
+      "entryId": 1228858,
+      "manager": "Philip Beh Jing Hong",
+      "team": "The Invincibles",
+      "gwPoints": 72,
+      "total": 72
+    },
+    {
+      "rank": 11,
+      "lastRank": 0,
+      "entryId": 2103225,
+      "manager": "Cheehow Koh",
+      "team": "how92",
+      "gwPoints": 72,
+      "total": 72
+    },
+    {
+      "rank": 11,
+      "lastRank": 0,
+      "entryId": 5943444,
+      "manager": "Kean Wu Tan",
+      "team": "Arsenal4Ever",
+      "gwPoints": 72,
+      "total": 72
+    },
+    {
+      "rank": 11,
+      "lastRank": 0,
+      "entryId": 6877470,
+      "manager": "Danny Chong",
+      "team": "Danny's Team",
+      "gwPoints": 72,
+      "total": 72
+    },
+    {
+      "rank": 15,
+      "lastRank": 0,
+      "entryId": 4381064,
+      "manager": "Kim Tay",
+      "team": "SourKim FC",
+      "gwPoints": 71,
+      "total": 71
+    },
+    {
+      "rank": 15,
+      "lastRank": 0,
+      "entryId": 4797662,
+      "manager": "Chiow Yuan Khai",
+      "team": "Gunnerzzzzz",
+      "gwPoints": 71,
+      "total": 71
+    },
+    {
+      "rank": 17,
+      "lastRank": 0,
+      "entryId": 1209702,
+      "manager": "Allan Yeoh",
+      "team": "Viva Arsenal �",
+      "gwPoints": 69,
+      "total": 69
+    },
+    {
+      "rank": 17,
+      "lastRank": 0,
+      "entryId": 2871347,
+      "manager": "Chong Qing Kun",
+      "team": "KUN27",
+      "gwPoints": 69,
+      "total": 69
+    },
+    {
+      "rank": 17,
+      "lastRank": 0,
+      "entryId": 4873781,
+      "manager": "Tony Wong",
+      "team": "TehCBeng",
+      "gwPoints": 69,
+      "total": 69
+    },
+    {
+      "rank": 20,
+      "lastRank": 0,
+      "entryId": 6747017,
+      "manager": "Huai Liang Chew",
+      "team": "Highbury FC",
+      "gwPoints": 67,
+      "total": 67
+    },
+    {
+      "rank": 21,
+      "lastRank": 0,
+      "entryId": 1166112,
+      "manager": "Joen Low",
+      "team": "Joen 41",
+      "gwPoints": 66,
+      "total": 66
+    },
+    {
+      "rank": 21,
+      "lastRank": 0,
+      "entryId": 5278596,
+      "manager": "LEE TZE HENG",
+      "team": "COYG Warriors",
+      "gwPoints": 66,
+      "total": 66
+    },
+    {
+      "rank": 21,
+      "lastRank": 0,
+      "entryId": 6737029,
+      "manager": "Teong Ah",
+      "team": "Gunners For Life",
+      "gwPoints": 66,
+      "total": 66
+    },
+    {
+      "rank": 24,
+      "lastRank": 0,
+      "entryId": 5135159,
+      "manager": "Chia Ting Yap",
+      "team": "Titi FC",
+      "gwPoints": 65,
+      "total": 65
+    },
+    {
+      "rank": 25,
+      "lastRank": 0,
+      "entryId": 3116698,
+      "manager": "KKH K.",
+      "team": "Pancake",
+      "gwPoints": 64,
+      "total": 64
+    },
+    {
+      "rank": 25,
+      "lastRank": 0,
+      "entryId": 3168002,
+      "manager": "KP Khor",
+      "team": "BaHaMan FC",
+      "gwPoints": 64,
+      "total": 64
+    },
+    {
+      "rank": 25,
+      "lastRank": 0,
+      "entryId": 3497040,
+      "manager": "Ken How",
+      "team": "rrrrrr",
+      "gwPoints": 64,
+      "total": 64
+    },
+    {
+      "rank": 25,
+      "lastRank": 0,
+      "entryId": 4795257,
+      "manager": "lee heng keh chung",
+      "team": "harvest day",
+      "gwPoints": 64,
+      "total": 64
+    },
+    {
+      "rank": 25,
+      "lastRank": 0,
+      "entryId": 5516972,
+      "manager": "Ivan Leong",
+      "team": "Gunner FC",
+      "gwPoints": 64,
+      "total": 64
+    },
+    {
+      "rank": 30,
+      "lastRank": 0,
+      "entryId": 49767,
+      "manager": "Ng yucong",
+      "team": "Yucong",
+      "gwPoints": 63,
+      "total": 63
+    },
+    {
+      "rank": 30,
+      "lastRank": 0,
+      "entryId": 1187104,
+      "manager": "V Buster",
+      "team": "DCFC",
+      "gwPoints": 63,
+      "total": 63
+    },
+    {
+      "rank": 30,
+      "lastRank": 0,
+      "entryId": 2305234,
+      "manager": "Jet Chan",
+      "team": "RisingGunner2027",
+      "gwPoints": 63,
+      "total": 63
+    },
+    {
+      "rank": 30,
+      "lastRank": 0,
+      "entryId": 6191811,
+      "manager": "KY Teoh Titanmas",
+      "team": "North London Forever",
+      "gwPoints": 63,
+      "total": 63
+    },
+    {
+      "rank": 34,
+      "lastRank": 0,
+      "entryId": 1929408,
+      "manager": "Elson Wong",
+      "team": "ELSON",
+      "gwPoints": 62,
+      "total": 62
+    },
+    {
+      "rank": 34,
+      "lastRank": 0,
+      "entryId": 2679882,
+      "manager": "Francis Chong",
+      "team": "Haaland Already bro",
+      "gwPoints": 62,
+      "total": 62
+    },
+    {
+      "rank": 34,
+      "lastRank": 0,
+      "entryId": 6235904,
+      "manager": "Egg Wong",
+      "team": "Eggy",
+      "gwPoints": 62,
+      "total": 62
+    },
+    {
+      "rank": 37,
+      "lastRank": 0,
+      "entryId": 66734,
+      "manager": "Darryl Koh",
+      "team": "Ruby Palace FC",
+      "gwPoints": 61,
+      "total": 61
+    },
+    {
+      "rank": 37,
+      "lastRank": 0,
+      "entryId": 1506368,
+      "manager": "David Yong Voon Cheng",
+      "team": "Dacrazyman",
+      "gwPoints": 61,
+      "total": 61
+    },
+    {
+      "rank": 37,
+      "lastRank": 0,
+      "entryId": 4844838,
+      "manager": "JQ LIM",
+      "team": "Arsenalism",
+      "gwPoints": 61,
+      "total": 61
+    },
+    {
+      "rank": 37,
+      "lastRank": 0,
+      "entryId": 5706524,
+      "manager": "Qxuan 8188",
+      "team": "Artetalized",
+      "gwPoints": 61,
+      "total": 61
+    },
+    {
+      "rank": 41,
+      "lastRank": 0,
+      "entryId": 3535051,
+      "manager": "黑翼 白毛",
+      "team": "Rayproof Kyrielight",
+      "gwPoints": 60,
+      "total": 60
+    },
+    {
+      "rank": 41,
+      "lastRank": 0,
+      "entryId": 5957899,
+      "manager": "ChengKiong Lim",
+      "team": "ChengKiong's Team",
+      "gwPoints": 60,
+      "total": 60
+    },
+    {
+      "rank": 43,
+      "lastRank": 0,
+      "entryId": 718461,
+      "manager": "Nelson Chan",
+      "team": "LIONEL FC",
+      "gwPoints": 59,
+      "total": 59
+    },
+    {
+      "rank": 43,
+      "lastRank": 0,
+      "entryId": 1165661,
+      "manager": "Frankie Ng",
+      "team": "Arsenal7613",
+      "gwPoints": 59,
+      "total": 59
+    },
+    {
+      "rank": 43,
+      "lastRank": 0,
+      "entryId": 2180141,
+      "manager": "Gunner Life",
+      "team": "immoartalGunners",
+      "gwPoints": 59,
+      "total": 59
+    },
+    {
+      "rank": 43,
+      "lastRank": 0,
+      "entryId": 3177573,
+      "manager": "tan xiao ren",
+      "team": "R&B",
+      "gwPoints": 59,
+      "total": 59
+    },
+    {
+      "rank": 43,
+      "lastRank": 0,
+      "entryId": 3353096,
+      "manager": "Eve Tan",
+      "team": "eve",
+      "gwPoints": 59,
+      "total": 59
+    },
+    {
+      "rank": 48,
+      "lastRank": 0,
+      "entryId": 5274861,
+      "manager": "Chuin Liang Yeap",
+      "team": "JLteam",
+      "gwPoints": 58,
+      "total": 58
+    },
+    {
+      "rank": 48,
+      "lastRank": 0,
+      "entryId": 5475093,
+      "manager": "Deadpool Wolverine",
+      "team": "Deadpool x Wolverine",
+      "gwPoints": 58,
+      "total": 58
+    },
+    {
+      "rank": 50,
+      "lastRank": 0,
+      "entryId": 1675789,
+      "manager": "Zhe Xian Hoe",
+      "team": "aGGro",
+      "gwPoints": 57,
+      "total": 57
+    },
+    {
+      "rank": 50,
+      "lastRank": 0,
+      "entryId": 5705589,
+      "manager": "Ivan Foong",
+      "team": "awei26",
+      "gwPoints": 57,
+      "total": 57
+    },
+    {
+      "rank": 50,
+      "lastRank": 0,
+      "entryId": 6508962,
+      "manager": "Patrick Loo",
+      "team": "ZLATANATOR",
+      "gwPoints": 57,
+      "total": 57
+    },
+    {
+      "rank": 53,
+      "lastRank": 0,
+      "entryId": 1361216,
+      "manager": "Johnny Chung Li",
+      "team": "Rambo1-AfterReview",
+      "gwPoints": 56,
+      "total": 56
+    },
+    {
+      "rank": 53,
+      "lastRank": 0,
+      "entryId": 5461994,
+      "manager": "gunsin sin",
+      "team": "singunsin",
+      "gwPoints": 56,
+      "total": 56
+    },
+    {
+      "rank": 53,
+      "lastRank": 0,
+      "entryId": 6521667,
+      "manager": "Steve Lee",
+      "team": "Steve's Team",
+      "gwPoints": 56,
+      "total": 56
+    },
+    {
+      "rank": 56,
+      "lastRank": 0,
+      "entryId": 2335797,
+      "manager": "Chooi Weng Keat",
+      "team": "Chooi's Team",
+      "gwPoints": 55,
+      "total": 55
+    },
+    {
+      "rank": 56,
+      "lastRank": 0,
+      "entryId": 3493788,
+      "manager": "Han Siang Ku",
+      "team": "BaKu",
+      "gwPoints": 55,
+      "total": 55
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 441761,
+      "manager": "Lee Wei Lun",
+      "team": "gunnerlun0906",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 2189002,
+      "manager": "ChernChung Poh",
+      "team": "又白又圆",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 2548010,
+      "manager": "Jackie Teh",
+      "team": "JackSPN FC",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 4865241,
+      "manager": "Creus HY",
+      "team": "The Mighty Arsenal",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 5588504,
+      "manager": "Kah Sheng C",
+      "team": "Twinkle Gooner",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 7892333,
+      "manager": "super KEE",
+      "team": "SuperGunner",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 58,
+      "lastRank": 0,
+      "entryId": 8515480,
+      "manager": "Kelvin. C",
+      "team": "Arsenal Always",
+      "gwPoints": 54,
+      "total": 54
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 125014,
+      "manager": "Ivan Ho",
+      "team": "The Football Guy MY",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 417376,
+      "manager": "Ivan Chua",
+      "team": "K Ivan utd",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 1345189,
+      "manager": "Ye Peng Tang",
+      "team": "peng2257",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 3414533,
+      "manager": "Ng Jian Ming",
+      "team": "Jose Mourinho 666",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 3555551,
+      "manager": "WAI HONG Yap",
+      "team": "嫩嫩佬佬枪手",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 65,
+      "lastRank": 0,
+      "entryId": 8081978,
+      "manager": "killer 5133",
+      "team": "killer's Team",
+      "gwPoints": 53,
+      "total": 53
+    },
+    {
+      "rank": 71,
+      "lastRank": 0,
+      "entryId": 178214,
+      "manager": "Low Chee Kuang",
+      "team": "FPL_Yoshi",
+      "gwPoints": 52,
+      "total": 52
+    },
+    {
+      "rank": 71,
+      "lastRank": 0,
+      "entryId": 1969259,
+      "manager": "Jasper Ong",
+      "team": "Casper Gunner",
+      "gwPoints": 52,
+      "total": 52
+    },
+    {
+      "rank": 71,
+      "lastRank": 0,
+      "entryId": 2829227,
+      "manager": "A K",
+      "team": "ARsaNT",
+      "gwPoints": 52,
+      "total": 52
+    },
+    {
+      "rank": 71,
+      "lastRank": 0,
+      "entryId": 3620917,
+      "manager": "Chee Hoong Jun",
+      "team": "0 years more",
+      "gwPoints": 52,
+      "total": 52
+    },
+    {
+      "rank": 71,
+      "lastRank": 0,
+      "entryId": 5498572,
+      "manager": "Arjong Lim",
+      "team": "ManOfTheMatch 10",
+      "gwPoints": 52,
+      "total": 52
+    },
+    {
+      "rank": 76,
+      "lastRank": 0,
+      "entryId": 1161896,
+      "manager": "Number 14 Sit",
+      "team": "Number 14 Sit",
+      "gwPoints": 51,
+      "total": 51
+    },
+    {
+      "rank": 76,
+      "lastRank": 0,
+      "entryId": 2942629,
+      "manager": "Takki Low",
+      "team": "Takki 蔚蕓子",
+      "gwPoints": 51,
+      "total": 51
+    },
+    {
+      "rank": 76,
+      "lastRank": 0,
+      "entryId": 4553564,
+      "manager": "CheePue Chan",
+      "team": "《范特西》是歌手周杰伦第二张录音室专辑",
+      "gwPoints": 51,
+      "total": 51
+    },
+    {
+      "rank": 79,
+      "lastRank": 0,
+      "entryId": 2462192,
+      "manager": "Kevin Low",
+      "team": "It’s not Done FC",
+      "gwPoints": 50,
+      "total": 50
+    },
+    {
+      "rank": 79,
+      "lastRank": 0,
+      "entryId": 2547226,
+      "manager": "무패의 아르테타",
+      "team": "자호의 포병단",
+      "gwPoints": 50,
+      "total": 50
+    },
+    {
+      "rank": 79,
+      "lastRank": 0,
+      "entryId": 3071487,
+      "manager": "William Goh",
+      "team": "会飞的企鹅�",
+      "gwPoints": 50,
+      "total": 50
+    },
+    {
+      "rank": 82,
+      "lastRank": 0,
+      "entryId": 3774923,
+      "manager": "YK Ang",
+      "team": "Gnaky2020 Team",
+      "gwPoints": 49,
+      "total": 49
+    },
+    {
+      "rank": 82,
+      "lastRank": 0,
+      "entryId": 4778037,
+      "manager": "Nicholas Thinesh",
+      "team": "ItsNotDone",
+      "gwPoints": 49,
+      "total": 49
+    },
+    {
+      "rank": 82,
+      "lastRank": 0,
+      "entryId": 5081063,
+      "manager": "Foo Yen Lee",
+      "team": "Devil 7",
+      "gwPoints": 49,
+      "total": 49
+    },
+    {
+      "rank": 82,
+      "lastRank": 0,
+      "entryId": 5277309,
+      "manager": "Alexis Wei yang",
+      "team": "Alexisyang888",
+      "gwPoints": 49,
+      "total": 49
+    },
+    {
+      "rank": 86,
+      "lastRank": 0,
+      "entryId": 4571082,
+      "manager": "Joash Lim",
+      "team": "Gooners Juniors",
+      "gwPoints": 48,
+      "total": 48
+    },
+    {
+      "rank": 86,
+      "lastRank": 0,
+      "entryId": 5076674,
+      "manager": "Wai Kit",
+      "team": "MightyCutieLuLu",
+      "gwPoints": 48,
+      "total": 48
+    },
+    {
+      "rank": 86,
+      "lastRank": 0,
+      "entryId": 5989540,
+      "manager": "Kevin Chong",
+      "team": "Kwin",
+      "gwPoints": 48,
+      "total": 48
+    },
+    {
+      "rank": 86,
+      "lastRank": 0,
+      "entryId": 8018256,
+      "manager": "Kevin Yip",
+      "team": "Gunner@Kywl1992",
+      "gwPoints": 48,
+      "total": 48
+    },
+    {
+      "rank": 86,
+      "lastRank": 0,
+      "entryId": 8526535,
+      "manager": "Man Yuan",
+      "team": "Gunner Here",
+      "gwPoints": 48,
+      "total": 48
+    },
+    {
+      "rank": 91,
+      "lastRank": 0,
+      "entryId": 4985133,
+      "manager": "Wing Hoe Yee",
+      "team": "icesenal",
+      "gwPoints": 47,
+      "total": 47
+    },
+    {
+      "rank": 91,
+      "lastRank": 0,
+      "entryId": 6255292,
+      "manager": "Chee Hoe",
+      "team": "WaDafuQz",
+      "gwPoints": 47,
+      "total": 47
+    },
+    {
+      "rank": 91,
+      "lastRank": 0,
+      "entryId": 7532958,
+      "manager": "Leon Chu",
+      "team": "MYGunners8768",
+      "gwPoints": 47,
+      "total": 47
+    },
+    {
+      "rank": 94,
+      "lastRank": 0,
+      "entryId": 1812968,
+      "manager": "K0@l@ K0@l@",
+      "team": "Fuj1s@n",
+      "gwPoints": 46,
+      "total": 46
+    },
+    {
+      "rank": 94,
+      "lastRank": 0,
+      "entryId": 8263806,
+      "manager": "Teh Kwong Chi",
+      "team": "TKC 4",
+      "gwPoints": 46,
+      "total": 46
+    },
+    {
+      "rank": 96,
+      "lastRank": 0,
+      "entryId": 449423,
+      "manager": "KaiJun Wong",
+      "team": "GUNNERÃES",
+      "gwPoints": 45,
+      "total": 45
+    },
+    {
+      "rank": 96,
+      "lastRank": 0,
+      "entryId": 2438816,
+      "manager": "Wai Onn Phoo",
+      "team": "39Bruno GuimaRice41",
+      "gwPoints": 45,
+      "total": 45
+    },
+    {
+      "rank": 96,
+      "lastRank": 0,
+      "entryId": 2913719,
+      "manager": "Vincent Him",
+      "team": "Vincent's Team",
+      "gwPoints": 45,
+      "total": 45
+    },
+    {
+      "rank": 96,
+      "lastRank": 0,
+      "entryId": 4159880,
+      "manager": "Khai Ti Jenkinson",
+      "team": "Shadow_WinDD",
+      "gwPoints": 45,
+      "total": 45
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 23420,
+      "manager": "Kar Yee Ang",
+      "team": "BlizzardFl@ReZ™",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 1146160,
+      "manager": "Wei Yu Chow",
+      "team": "Dutch Man Team",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 2563224,
+      "manager": "Yong Kong Soon",
+      "team": "ftygunners",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 4962951,
+      "manager": "London Red",
+      "team": "London's Team",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 5622016,
+      "manager": "lee jeck",
+      "team": "Lee Jeck",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 100,
+      "lastRank": 0,
+      "entryId": 8465040,
+      "manager": "Joshua see",
+      "team": "2inAroW",
+      "gwPoints": 44,
+      "total": 44
+    },
+    {
+      "rank": 106,
+      "lastRank": 0,
+      "entryId": 342541,
+      "manager": "louis thong",
+      "team": "fongwan@Arsenal",
+      "gwPoints": 42,
+      "total": 42
+    },
+    {
+      "rank": 106,
+      "lastRank": 0,
+      "entryId": 1145050,
+      "manager": "Soh Chee Siang",
+      "team": "Bukayo Siang",
+      "gwPoints": 42,
+      "total": 42
+    },
+    {
+      "rank": 106,
+      "lastRank": 0,
+      "entryId": 2329276,
+      "manager": "Tim Lau",
+      "team": "Acube",
+      "gwPoints": 42,
+      "total": 42
+    },
+    {
+      "rank": 106,
+      "lastRank": 0,
+      "entryId": 8034914,
+      "manager": "沈 志康",
+      "team": "ZhiKang",
+      "gwPoints": 42,
+      "total": 42
+    },
+    {
+      "rank": 110,
+      "lastRank": 0,
+      "entryId": 859397,
+      "manager": "X -23",
+      "team": "X-23",
+      "gwPoints": 39,
+      "total": 39
+    },
+    {
+      "rank": 110,
+      "lastRank": 0,
+      "entryId": 1865625,
+      "manager": "Rice 41",
+      "team": "Rice 41",
+      "gwPoints": 39,
+      "total": 39
+    },
+    {
+      "rank": 110,
+      "lastRank": 0,
+      "entryId": 4856575,
+      "manager": "Lucasyip Yip",
+      "team": "Lucasyip's Team",
+      "gwPoints": 39,
+      "total": 39
+    },
+    {
+      "rank": 113,
+      "lastRank": 0,
+      "entryId": 1210174,
+      "manager": "Henry XIV",
+      "team": "Henry xiv",
+      "gwPoints": 38,
+      "total": 38
+    },
+    {
+      "rank": 113,
+      "lastRank": 0,
+      "entryId": 5076217,
+      "manager": "Winson pow",
+      "team": "RICEFUNFAN",
+      "gwPoints": 38,
+      "total": 38
+    },
+    {
+      "rank": 115,
+      "lastRank": 0,
+      "entryId": 4625209,
+      "manager": "Ah Vin",
+      "team": "It's Not Done. 41",
+      "gwPoints": 37,
+      "total": 37
+    },
+    {
+      "rank": 116,
+      "lastRank": 0,
+      "entryId": 2023049,
+      "manager": "Total 90",
+      "team": "Total 90",
+      "gwPoints": 36,
+      "total": 36
+    },
+    {
+      "rank": 116,
+      "lastRank": 0,
+      "entryId": 2418579,
+      "manager": "Hoo Mim Cong",
+      "team": "MC Hoo10",
+      "gwPoints": 36,
+      "total": 36
+    },
+    {
+      "rank": 118,
+      "lastRank": 0,
+      "entryId": 5179370,
+      "manager": "Jacky Chee",
+      "team": "ArsenalFC",
+      "gwPoints": 34,
+      "total": 34
+    },
+    {
+      "rank": 119,
+      "lastRank": 0,
+      "entryId": 688643,
+      "manager": "Joni Wong",
+      "team": "Ting Tong United",
+      "gwPoints": 33,
+      "total": 33
+    },
+    {
+      "rank": 119,
+      "lastRank": 0,
+      "entryId": 4918425,
+      "manager": "Paosom Lim",
+      "team": "paosom83",
+      "gwPoints": 33,
+      "total": 33
+    },
+    {
+      "rank": 119,
+      "lastRank": 0,
+      "entryId": 6219924,
+      "manager": "CS Lee",
+      "team": "BoLts FC",
+      "gwPoints": 33,
+      "total": 33
+    },
+    {
+      "rank": 122,
+      "lastRank": 0,
+      "entryId": 2292092,
+      "manager": "Chen Wei Khang",
+      "team": "hihi",
+      "gwPoints": 32,
+      "total": 32
+    },
+    {
+      "rank": 122,
+      "lastRank": 0,
+      "entryId": 4014850,
+      "manager": "Mun Arteta",
+      "team": "North London Gunners",
+      "gwPoints": 32,
+      "total": 32
+    },
+    {
+      "rank": 124,
+      "lastRank": 0,
+      "entryId": 1495200,
+      "manager": "Edmond Lim",
+      "team": "EdmondLim FC",
+      "gwPoints": 31,
+      "total": 31
+    },
+    {
+      "rank": 124,
+      "lastRank": 0,
+      "entryId": 2170330,
+      "manager": "KEAT JEN TNEH",
+      "team": "Change Name",
+      "gwPoints": 31,
+      "total": 31
+    },
+    {
+      "rank": 126,
+      "lastRank": 0,
+      "entryId": 1705743,
+      "manager": "7 Star",
+      "team": "7 Star",
+      "gwPoints": 29,
+      "total": 29
     }
   ],
   "highestGw": {
@@ -65,7 +1154,24 @@
     "team": "The Marvel 11",
     "score": 96,
     "gw": 1,
-    "runnersUp": []
+    "runnersUp": [
+      {
+        "manager": "Liang Arsenal",
+        "score": 86
+      },
+      {
+        "manager": "soo sheng",
+        "score": 83
+      },
+      {
+        "manager": "Cheong Chee Poi",
+        "score": 82
+      },
+      {
+        "manager": "Yuen Khai Khoo",
+        "score": 81
+      }
+    ]
   },
   "mostMotw": {
     "manager": "Steve Strange",
