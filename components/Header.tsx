@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Meta } from "@/lib/types";
 import CannonLogo from "@/components/CannonLogo";
 
@@ -24,7 +25,15 @@ export default function Header({ meta }: { meta: Meta }) {
           </div>
         </div>
       </div>
-      {meta.liveGw !== null && <LivePill gw={meta.liveGw} />}
+      <div className="flex flex-none items-center gap-3">
+        {meta.liveGw !== null && <LivePill gw={meta.liveGw} />}
+        <Link
+          href="/report"
+          className="inline-flex flex-none items-center gap-2 rounded-full border border-mint/40 bg-mint/10 px-3.5 py-2 font-display text-[11px] font-extrabold uppercase tracking-[.1em] text-mint transition hover:bg-mint/20"
+        >
+          📣 Gameweek Report
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getDashboard } from "@/lib/data";
 import ReportClient from "@/components/report/ReportClient";
 
@@ -6,6 +7,12 @@ export default function ReportPage() {
 
   return (
     <main className="mx-auto max-w-[1040px] px-5 pb-20 pt-[30px]">
+      <Link
+        href="/"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted transition hover:text-mint"
+      >
+        ← Dashboard
+      </Link>
       <div>
         <div className="font-display text-xs font-extrabold uppercase tracking-[.13em] text-mint">
           Gameweek Report · Facebook post generator
