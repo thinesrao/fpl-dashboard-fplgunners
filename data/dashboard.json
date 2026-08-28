@@ -3,22 +3,90 @@
     "leagueId": 1022594,
     "leagueName": "🏆 槍迷之家超級聯賽 🏆",
     "leagueNameEn": "Gunners League",
-    "seasonLabel": "Season 6",
+    "seasonLabel": "Season 7",
     "managerCount": 126,
     "lastFinishedGw": 1,
     "lastUpdatedUtc": "2026-08-27T21:40:00Z",
     "liveGw": null,
-    "nextGw": { "number": 2, "deadlineUtc": "2026-08-30T10:00:00Z" }
+    "nextGw": {
+      "number": 2,
+      "deadlineUtc": "2026-08-28T17:30:00Z"
+    }
   },
   "standings": [
-    { "rank": 1, "lastRank": 0, "entryId": 4778037, "manager": "Steve Strange", "team": "The Marvel 11", "gwPoints": 96, "total": 96 },
-    { "rank": 2, "lastRank": 0, "entryId": 1, "manager": "Liang Arsenal", "team": "liang", "gwPoints": 86, "total": 86 },
-    { "rank": 3, "lastRank": 0, "entryId": 2, "manager": "soo sheng", "team": "Gunner92", "gwPoints": 83, "total": 83 },
-    { "rank": 4, "lastRank": 0, "entryId": 3, "manager": "Cheong Chee Poi", "team": "northlondonforever94", "gwPoints": 82, "total": 82 },
-    { "rank": 5, "lastRank": 0, "entryId": 4, "manager": "Yuen Khai Khoo", "team": "Ødeparfum", "gwPoints": 81, "total": 81 }
+    {
+      "rank": 1,
+      "lastRank": 0,
+      "entryId": 4778037,
+      "manager": "Steve Strange",
+      "team": "The Marvel 11",
+      "gwPoints": 96,
+      "total": 96
+    },
+    {
+      "rank": 2,
+      "lastRank": 0,
+      "entryId": 1,
+      "manager": "Liang Arsenal",
+      "team": "liang",
+      "gwPoints": 86,
+      "total": 86
+    },
+    {
+      "rank": 3,
+      "lastRank": 0,
+      "entryId": 2,
+      "manager": "soo sheng",
+      "team": "Gunner92",
+      "gwPoints": 83,
+      "total": 83
+    },
+    {
+      "rank": 4,
+      "lastRank": 0,
+      "entryId": 3,
+      "manager": "Cheong Chee Poi",
+      "team": "northlondonforever94",
+      "gwPoints": 82,
+      "total": 82
+    },
+    {
+      "rank": 5,
+      "lastRank": 0,
+      "entryId": 4,
+      "manager": "Yuen Khai Khoo",
+      "team": "Ødeparfum",
+      "gwPoints": 81,
+      "total": 81
+    }
   ],
-  "highestGw": { "manager": "Steve Strange", "team": "The Marvel 11", "score": 96, "gw": 1, "runnersUp": [] },
-  "mostMotw": { "manager": "Steve Strange", "team": "The Marvel 11", "wins": 1, "lastWinGw": 1, "runnersUp": [] },
-  "weeklyTop": { "manager": "Steve Strange", "team": "The Marvel 11", "score": 96, "gw": 1 },
-  "report": { "flags": { "recordBroken": false, "leaderChanged": false, "prevLeader": "", "gapToSecond": 10, "weeklyTopScore": 96 } }
+  "highestGw": {
+    "manager": "Steve Strange",
+    "team": "The Marvel 11",
+    "score": 96,
+    "gw": 1,
+    "runnersUp": []
+  },
+  "mostMotw": {
+    "manager": "Steve Strange",
+    "team": "The Marvel 11",
+    "wins": 1,
+    "lastWinGw": 1,
+    "runnersUp": []
+  },
+  "weeklyTop": {
+    "manager": "Steve Strange",
+    "team": "The Marvel 11",
+    "score": 96,
+    "gw": 1
+  },
+  "report": {
+    "flags": {
+      "recordBroken": false,
+      "leaderChanged": false,
+      "prevLeader": "",
+      "gapToSecond": 10,
+      "weeklyTopScore": 96
+    }
+  }
 }

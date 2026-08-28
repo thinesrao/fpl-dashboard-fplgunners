@@ -21,13 +21,18 @@ export default function ReportClient({ data }: { data: Dashboard }) {
     <div className="mt-6 grid grid-cols-[400px_1fr] items-start gap-[22px] max-[820px]:grid-cols-1">
       <div className="sticky top-5 max-[820px]:static">
         <Poster data={data} angle={angle} />
-        <div className="mt-3.5 flex gap-2.5">
+        <div className="mt-3.5">
           <a
             href="/report/opengraph-image"
-            className="flex-1 rounded-[11px] border border-line bg-surface-2 px-[11px] py-[11px] text-center font-display text-xs font-extrabold uppercase tracking-[.04em] text-text transition-colors hover:border-mint hover:text-mint"
+            download="gameweek-report.png"
+            className="flex w-full items-center justify-center gap-2 rounded-[11px] bg-mint px-4 py-3 font-display text-sm font-extrabold uppercase tracking-[.04em] text-mint-ink shadow-[0_4px_14px_rgba(43,252,164,.28)] transition hover:brightness-110"
           >
-            ⬇ Image
+            ⬇ Download poster (PNG)
           </a>
+          <p className="mt-2 text-center text-[11.5px] text-faint">
+            Save the image, copy the caption on the right, then paste both into
+            your Facebook group.
+          </p>
         </div>
       </div>
 

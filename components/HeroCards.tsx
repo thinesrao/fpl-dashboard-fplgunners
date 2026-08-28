@@ -90,9 +90,11 @@ export default function HeroCards({ data }: { data: Dashboard }) {
         eyebrow="Highest Gameweek Score"
         big={highestGw.score}
         name={highestGw.manager}
-        meta={`${highestGw.team} · achieved in Gameweek ${highestGw.gw}`}
+        meta={`${highestGw.team} · set in Gameweek ${highestGw.gw}`}
         testId="hero-highest"
-      />
+      >
+        <SoFarTag accent="hot" label="Leading · season so far" />
+      </Card>
 
       <Card
         accent="gold"
@@ -102,7 +104,20 @@ export default function HeroCards({ data }: { data: Dashboard }) {
         name={mostMotw.manager}
         meta={`${mostMotw.team} · last won in Gameweek ${mostMotw.lastWinGw}`}
         testId="hero-motw"
-      />
+      >
+        <SoFarTag accent="gold" label="Leading · season so far" />
+      </Card>
     </section>
+  );
+}
+
+function SoFarTag({ accent, label }: { accent: "hot" | "gold"; label: string }) {
+  const tint = accent === "hot" ? "bg-hot/12 text-hot" : "bg-gold/14 text-gold";
+  return (
+    <span
+      className={`mt-3 inline-flex items-center gap-1.5 rounded-full px-[9px] py-1 font-display text-[10px] font-extrabold uppercase tracking-[.06em] ${tint}`}
+    >
+      ⏳ {label}
+    </span>
   );
 }

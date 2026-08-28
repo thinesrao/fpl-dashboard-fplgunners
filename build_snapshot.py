@@ -27,7 +27,7 @@ def main():
         "leagueId": 1022594,
         "leagueNameEn": "Gunners League",
         "leagueName": "🏆 槍迷之家超級聯賽 🏆",
-        "seasonLabel": "Season 6",
+        "seasonLabel": "Season 7",
     }
     dashboard = build.build_dashboard(sheets, bootstrap, cfg, prev)
     io.write_json("data/dashboard.json", dashboard)

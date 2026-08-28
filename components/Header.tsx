@@ -29,9 +29,9 @@ export default function Header({ meta }: { meta: Meta }) {
         {meta.liveGw !== null && <LivePill gw={meta.liveGw} />}
         <Link
           href="/report"
-          className="inline-flex flex-none items-center gap-2 rounded-full border border-mint/40 bg-mint/10 px-3.5 py-2 font-display text-[11px] font-extrabold uppercase tracking-[.1em] text-mint transition hover:bg-mint/20"
+          className="inline-flex flex-none items-center gap-2 rounded-full bg-mint px-4 py-2 font-display text-[11px] font-extrabold uppercase tracking-[.1em] text-mint-ink shadow-[0_2px_10px_rgba(43,252,164,.25)] transition hover:brightness-110"
         >
-          📣 Gameweek Report
+          📣 Gameweek Report →
         </Link>
       </div>
     </div>
