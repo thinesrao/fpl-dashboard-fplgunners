@@ -116,7 +116,28 @@ def main():
 
     fpl_data = get_json_from_url(BOOTSTRAP_STATIC_URL)
     classic_league_data = get_json_from_url(CLASSIC_LEAGUE_URL)
-    
+
+    # The classic-league standings endpoint paginates at 50 results per page.
+    # Fetch EVERY page so the pipeline processes all managers, not just the
+    # top 50 (otherwise the rest of the league silently drops out of the
+    # standings, awards, and per-manager history calls).
+    if classic_league_data:
+        all_results = list(classic_league_data['standings']['results'])
+        has_next = classic_league_data['standings'].get('has_next', False)
+        page = 1
+        while has_next and page < 50:
+            page += 1
+            next_page = get_json_from_url(f"{CLASSIC_LEAGUE_URL}?page_standings={page}")
+            if not next_page:
+                print(f"Warning: could not fetch classic standings page {page}; "
+                      f"continuing with {len(all_results)} managers.")
+                break
+            all_results.extend(next_page['standings']['results'])
+            has_next = next_page['standings'].get('has_next', False)
+        classic_league_data['standings']['results'] = all_results
+        print(f"Fetched {len(all_results)} classic-league managers across {page} page(s).")
+
+
     # Optional data fetching
     h2h_league_data = get_json_from_url(H2H_LEAGUE_URL) if ENABLE_H2H_LEAGUE and H2H_LEAGUE_ID else None
     h2h_matches_data = get_json_from_url(H2H_MATCHES_URL) if ENABLE_H2H_LEAGUE and H2H_LEAGUE_ID else None
