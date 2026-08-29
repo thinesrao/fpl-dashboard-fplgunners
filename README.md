@@ -1,18 +1,17 @@
 # 🏆 FPL Dashboard - Fantasy Premier League Analytics
 
-A comprehensive Fantasy Premier League dashboard that provides detailed analytics, awards, and insights for your mini-league. Built with Python, Streamlit, and Google Sheets integration.
+A comprehensive Fantasy Premier League dashboard that provides detailed analytics, awards, and insights for your mini-league. Built with **Next.js** (deployed on **Vercel**), a **Python** data pipeline, and **Google Sheets**.
 
 ![FPL Dashboard](https://img.shields.io/badge/FPL-Dashboard-blue)
+![Next.js](https://img.shields.io/badge/Next.js-Vercel-black)
 ![Python](https://img.shields.io/badge/Python-3.11+-green)
-![Streamlit](https://img.shields.io/badge/Streamlit-Web%20App-red)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 🆕 New Next.js dashboard (Vercel)
+## 🚀 Dashboard (Next.js on Vercel)
 
-This repo is migrating to a new dashboard built with **Next.js**, deployed on
-**Vercel**. It covers the same standings/awards/champion-plate view as the
-Streamlit app, plus a gameweek report image generator (poster + adaptive
-caption + share links).
+The live dashboard is built with **Next.js**, deployed on **Vercel**. It covers
+the standings/awards/champion-plate view, plus a gameweek report image
+generator (poster + adaptive caption + share links).
 
 The new app is fed by `data/dashboard.json` (and `data/champions.json`),
 committed to this repo by a **gated, hourly GitHub Action**
@@ -23,9 +22,12 @@ commit to `data/dashboard.json` triggers an auto-deploy on Vercel, so the
 dashboard's data is always driven by a plain committed JSON file rather than
 a live database.
 
-The **Streamlit app below is being retired** in favor of the Next.js
-dashboard — its setup instructions are kept for now as a reference, but new
-work should target the Next.js app.
+The **Streamlit app has been retired** in favor of the Next.js dashboard.
+Its source (`app.py`, `.streamlit/config.toml`) has been removed from the
+working tree — it remains in git history for reference. The sections below
+that mention the Streamlit app are historical; new work targets the Next.js
+app. (The Streamlit Community Cloud deployment must be deleted from the
+Streamlit dashboard separately.)
 
 See **[docs/DEPLOY.md](docs/DEPLOY.md)** for the full Vercel setup and
 handoff checklist (domain config, GitHub Actions permissions, verifying the
