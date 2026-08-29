@@ -4,6 +4,8 @@ Run with real credentials/network access:
     python3 build_snapshot.py
 """
 
+import os
+
 from snapshot import build, gate, io
 
 
@@ -18,9 +20,16 @@ def main():
     prev = io.read_prev("data/dashboard.json")
     prev_meta = prev["meta"] if prev else None
 
-    if not gate.should_rebuild(bootstrap, prev_meta):
+    # FORCE_REBUILD=1 bypasses the gate — used for a manual (workflow_dispatch)
+    # backfill when the latest gameweek is already "processed" but we still
+    # want to regenerate the snapshot from the freshly-written sheets.
+    force = os.getenv("FORCE_REBUILD", "").strip().lower() in ("1", "true", "yes")
+
+    if not force and not gate.should_rebuild(bootstrap, prev_meta):
         print("No new final gameweek — skipping.")
         return
+    if force:
+        print("FORCE_REBUILD set — regenerating snapshot regardless of gate.")
 
     sheets = io.read_sheets()
     cfg = {

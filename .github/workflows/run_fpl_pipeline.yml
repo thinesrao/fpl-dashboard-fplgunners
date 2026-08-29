@@ -9,6 +9,11 @@ on:
 
   # This line is ESSENTIAL for the "Run workflow" button to appear
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Force-regenerate the snapshot even if no new gameweek is final"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -39,6 +44,7 @@ jobs:
         run: python3 build_snapshot.py
         env:
           GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+          FORCE_REBUILD: ${{ github.event.inputs.force }}
 
       - name: Commit snapshot if changed
         run: |
