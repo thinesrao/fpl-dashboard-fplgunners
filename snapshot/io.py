@@ -17,7 +17,7 @@ from pathlib import Path
 import requests
 
 from config import GOOGLE_SHEET_NAME
-from data_pipeline import get_credentials, get_secrets
+from data_pipeline import get_credentials, get_secrets, with_retry
 
 BOOTSTRAP_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
 USER_AGENT = (
@@ -39,20 +39,26 @@ def read_sheets():
             "Google Sheets authentication failed — no GCP credentials found "
             "(set GCP_CREDENTIALS or provide .streamlit/secrets.toml)."
         )
-    spreadsheet = gc.open(GOOGLE_SHEET_NAME)
-    return {
-        worksheet.title: worksheet.get_all_records()
-        for worksheet in spreadsheet.worksheets()
-    }
+    def _read():
+        spreadsheet = gc.open(GOOGLE_SHEET_NAME)
+        return {
+            worksheet.title: worksheet.get_all_records()
+            for worksheet in spreadsheet.worksheets()
+        }
+
+    return with_retry(_read, description=f"read Google Sheet '{GOOGLE_SHEET_NAME}'")
 
 
 def fetch_bootstrap():
-    """GET the FPL bootstrap-static payload (browser User-Agent required)."""
-    response = requests.get(
-        BOOTSTRAP_URL, headers={"User-Agent": USER_AGENT}, timeout=15
-    )
-    response.raise_for_status()
-    return response.json()
+    """GET the FPL bootstrap-static payload (browser User-Agent required), with retries."""
+    def _fetch():
+        response = requests.get(
+            BOOTSTRAP_URL, headers={"User-Agent": USER_AGENT}, timeout=15
+        )
+        response.raise_for_status()
+        return response.json()
+
+    return with_retry(_fetch, description="GET bootstrap-static")
 
 
 def read_prev(path):

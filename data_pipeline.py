@@ -65,16 +65,56 @@ def get_credentials(gcp_creds_dict):
         print("ERROR: GCP credentials not found in secrets.toml or environment variables.")
         return None
     
+def _is_transient(exc):
+    """True for errors worth retrying (network blips, rate limits, 5xx).
+
+    Permanent client errors (4xx other than 429) are NOT transient — retrying
+    them just wastes time.
+    """
+    if isinstance(exc, requests.exceptions.HTTPError):
+        code = getattr(exc.response, "status_code", None)
+        return code is not None and (code == 429 or 500 <= code < 600)
+    if isinstance(exc, requests.exceptions.RequestException):
+        return True  # timeouts, connection resets, DNS failures, etc.
+    if isinstance(exc, gspread.exceptions.APIError):
+        code = getattr(getattr(exc, "response", None), "status_code", None)
+        return code is None or code == 429 or 500 <= code < 600
+    return False
+
+
+def with_retry(func, description="operation", attempts=4, base_delay=2.0):
+    """Call func(), retrying transient network/API errors with exponential backoff.
+
+    Non-transient errors (and the final attempt) re-raise immediately.
+    """
+    for attempt in range(1, attempts + 1):
+        try:
+            return func()
+        except Exception as exc:
+            if attempt >= attempts or not _is_transient(exc):
+                raise
+            delay = base_delay * (2 ** (attempt - 1))
+            print(
+                f"Transient error during {description} "
+                f"(attempt {attempt}/{attempts}): {exc}. Retrying in {delay:.0f}s…"
+            )
+            time.sleep(delay)
+
+
 def get_json_from_url(url, headers=None):
-    """Generic function to get JSON from a URL, now with header support."""
+    """Generic function to get JSON from a URL, with retries on transient errors."""
     if headers is None:
         headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-    try:
+
+    def _fetch():
         response = requests.get(url, timeout=15, headers=headers)
         response.raise_for_status()
         return response.json()
+
+    try:
+        return with_retry(_fetch, description=f"GET {url}")
     except requests.exceptions.RequestException as e:
         print(f"Error fetching {url}: {e}")
         return None
@@ -108,7 +148,10 @@ def main():
     if not gc:
         return # Exit if authentication fails
 
-    spreadsheet = gc.open(GOOGLE_SHEET_NAME)
+    spreadsheet = with_retry(
+        lambda: gc.open(GOOGLE_SHEET_NAME),
+        description=f"open Google Sheet '{GOOGLE_SHEET_NAME}'",
+    )
     print(f"Connected to Google Sheet: '{GOOGLE_SHEET_NAME}'")
     
     # --- END OF CORRECTED LOGIC BLOCK ---
@@ -733,12 +776,14 @@ def main():
 
     print("Writing all processed data to Google Sheets...")
     for name, df in worksheets_to_write.items():
-        try:
-            worksheet = spreadsheet.worksheet(name)
-            worksheet.clear()
-        except gspread.WorksheetNotFound:
-            worksheet = spreadsheet.add_worksheet(title=name, rows=len(df) + 1, cols=len(df.columns) + 1)
-        set_with_dataframe(worksheet, df, include_index=False)
+        def _write(name=name, df=df):
+            try:
+                worksheet = spreadsheet.worksheet(name)
+                worksheet.clear()
+            except gspread.WorksheetNotFound:
+                worksheet = spreadsheet.add_worksheet(title=name, rows=len(df) + 1, cols=len(df.columns) + 1)
+            set_with_dataframe(worksheet, df, include_index=False)
+        with_retry(_write, description=f"write worksheet '{name}'")
         print(f"  Successfully wrote to '{name}' worksheet.")
         time.sleep(3)
 
