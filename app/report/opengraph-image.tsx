@@ -1,11 +1,26 @@
 import { ImageResponse } from "next/og";
-import fs from "node:fs";
-import path from "node:path";
 import { getDashboard } from "@/lib/data";
 import { selectAngle, posterHighlight, formatDeadlineMYT, DASHBOARD_URL } from "@/lib/report";
 
 export const size = { width: 1080, height: 1350 };
 export const contentType = "image/png";
+
+// Fetch a Noto Sans TC subset containing exactly the glyphs drawn on this
+// poster (Latin + the specific Chinese characters in the labels and the
+// current manager names). This keeps the route tiny and — because it
+// regenerates from live data on every deploy — it can never miss a glyph, so
+// there's no bundled megabyte font and no tofu on Chinese names.
+async function loadNotoSansTC(text: string): Promise<ArrayBuffer> {
+  const url =
+    "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@700&text=" +
+    encodeURIComponent(text);
+  const css = await (await fetch(url)).text();
+  const src = css.match(/src:\s*url\(([^)]+)\)\s*format\('(?:opentype|truetype)'\)/);
+  if (!src) throw new Error("Could not resolve Noto Sans TC subset URL");
+  const res = await fetch(src[1]);
+  if (!res.ok) throw new Error(`Noto Sans TC subset download failed: ${res.status}`);
+  return res.arrayBuffer();
+}
 
 const MEDALS = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
 
@@ -53,7 +68,31 @@ export default async function Image() {
   const seasonDigits = meta.seasonLabel.replace(/\D/g, "");
   const siteHost = DASHBOARD_URL.replace(/^https?:\/\//, "");
 
-  const font = fs.readFileSync(path.join(process.cwd(), "app/report/NotoSansTC-Bold.otf"));
+  // Every string that will be drawn, so the fetched subset covers all of it.
+  const LATIN =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ·—-–：:#!.,/'&()";
+  const fontText =
+    LATIN +
+    [
+      meta.leagueName,
+      meta.leagueNameEn,
+      meta.seasonLabel,
+      "FPL 遊戲週戰報 GW",
+      highlight,
+      "本週總榜前五 Top",
+      "本週特別榮譽 Honours",
+      "單週最高分",
+      "賽季最高分紀錄",
+      "Gameweek 截止",
+      deadline,
+      "Next Deadline",
+      siteHost,
+      ...top5.map((r) => r.manager),
+      weeklyTop.manager,
+      highestGw.manager,
+    ].join(" ");
+
+  const font = await loadNotoSansTC(fontText);
 
   return new ImageResponse(
     (
