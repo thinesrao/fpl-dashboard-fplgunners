@@ -1,5 +1,13 @@
 import type { Dashboard } from "@/lib/types";
-import { posterHighlight, formatDeadlineMYT, DASHBOARD_URL, type AngleId } from "@/lib/report";
+import {
+  posterHighlight,
+  formatDeadlineMYT,
+  DASHBOARD_URL,
+  highestGwRace,
+  motwRace,
+  type AngleId,
+  type RaceEntry,
+} from "@/lib/report";
 import CannonLogo from "@/components/CannonLogo";
 
 const MEDALS = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
@@ -13,18 +21,60 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+function RaceBox({
+  icon,
+  title,
+  race,
+  unit,
+  valueClass,
+}: {
+  icon: string;
+  title: string;
+  race: RaceEntry[];
+  unit: string;
+  valueClass: string;
+}) {
+  return (
+    <div className="rounded-xl border border-line bg-surface/80 px-2.5 py-2.5">
+      <div className="flex items-center gap-1 font-cjk text-[10px] font-bold text-muted">
+        {icon} {title}
+      </div>
+      <div className="mt-1.5 flex flex-col gap-1">
+        {race.map((e, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            <span className="text-[11px]">{MEDALS[i]}</span>
+            <span
+              className={`min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-cjk text-[10.5px] ${i === 0 ? "font-bold text-text" : "text-muted"}`}
+            >
+              {e.manager}
+            </span>
+            <span
+              className={`font-display text-[12px] font-black ${i === 0 ? valueClass : "text-text"}`}
+            >
+              {e.value}
+              <span className="ml-px text-[8px] text-faint">{unit}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /**
  * The 4:5 shareable Gameweek-Report graphic. Pure/presentational — no
  * `'use client'`, no hooks, no state — so it can be reused as-is inside a
  * `next/og` image route later.
  */
 export default function Poster({ data, angle }: { data: Dashboard; angle: AngleId }) {
-  const { meta, standings, weeklyTop, highestGw } = data;
+  const { meta, standings } = data;
   const top5 = standings.slice(0, 5);
   const highlight = posterHighlight(data, angle);
   const deadline = formatDeadlineMYT(meta.nextGw.deadlineUtc);
   const seasonDigits = meta.seasonLabel.replace(/\D/g, "");
   const siteHost = DASHBOARD_URL.replace(/^https?:\/\//, "");
+  const hgwRace = highestGwRace(data);
+  const motwList = motwRace(data);
 
   return (
     <div
@@ -74,30 +124,10 @@ export default function Poster({ data, angle }: { data: Dashboard; angle: AngleI
           ))}
         </div>
 
-        <SectionLabel>本週特別榮譽 · Honours</SectionLabel>
+        <SectionLabel>領先者之爭 · Leading the Race</SectionLabel>
         <div className="mt-0.5 grid grid-cols-2 gap-2.5">
-          <div className="rounded-xl border border-line bg-surface/80 px-3 py-2.5">
-            <div className="flex items-center gap-1.5 font-cjk text-[10.5px] font-bold text-muted">
-              ✨ 單週最高分
-            </div>
-            <div className="mt-[5px] font-display text-[23px] font-black leading-none text-mint">
-              {weeklyTop.score}
-            </div>
-            <div className="mt-[3px] overflow-hidden text-ellipsis whitespace-nowrap font-cjk text-[11.5px] text-text">
-              {weeklyTop.manager}
-            </div>
-          </div>
-          <div className="rounded-xl border border-line bg-surface/80 px-3 py-2.5">
-            <div className="flex items-center gap-1.5 font-cjk text-[10.5px] font-bold text-muted">
-              📈 賽季最高分紀錄
-            </div>
-            <div className="mt-[5px] font-display text-[23px] font-black leading-none text-gold">
-              {highestGw.score}
-            </div>
-            <div className="mt-[3px] overflow-hidden text-ellipsis whitespace-nowrap font-cjk text-[11.5px] text-text">
-              {highestGw.manager}
-            </div>
-          </div>
+          <RaceBox icon="🚀" title="單週最高分" race={hgwRace} unit="分" valueClass="text-mint" />
+          <RaceBox icon="👑" title="每週最佳" race={motwList} unit="次" valueClass="text-gold" />
         </div>
 
         <div className="mt-auto flex items-center justify-between gap-2.5 border-t border-line pt-[13px]">

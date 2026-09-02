@@ -72,6 +72,27 @@ export function posterHighlight(d: Dashboard, id: AngleId): string {
 const MEDALS = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
 const SEASON_NUMBERS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
 
+export interface RaceEntry {
+  manager: string;
+  value: number;
+}
+
+/** Top-3 chasing the Highest Gameweek Score record (leader + runners-up, by best single-GW score). */
+export function highestGwRace(d: Dashboard): RaceEntry[] {
+  return [
+    { manager: d.highestGw.manager, value: d.highestGw.score },
+    ...d.highestGw.runnersUp.map((r) => ({ manager: r.manager, value: r.score })),
+  ].slice(0, 3);
+}
+
+/** Top-3 chasing Most Manager of the Week (leader + runners-up, by weekly wins). */
+export function motwRace(d: Dashboard): RaceEntry[] {
+  return [
+    { manager: d.mostMotw.manager, value: d.mostMotw.wins },
+    ...d.mostMotw.runnersUp.map((r) => ({ manager: r.manager, value: r.wins })),
+  ].slice(0, 3);
+}
+
 export const DASHBOARD_URL = "https://fplgunners.vercel.app"; // TODO(config): set to the live domain at deploy time
 
 export function buildCaption(d: Dashboard, id: AngleId): string {
@@ -82,6 +103,13 @@ export function buildCaption(d: Dashboard, id: AngleId): string {
     .map((r, i) => `${MEDALS[i]} ${r.manager}　${r.total}`)
     .join("\n");
   const deadline = formatDeadlineMYT(m.nextGw.deadlineUtc);
+  const medal = ["🥇", "🥈", "🥉"];
+  const hgw = highestGwRace(d)
+    .map((e, i) => `${medal[i]} ${e.manager} — ${e.value} 分`)
+    .join("\n");
+  const motw = motwRace(d)
+    .map((e, i) => `${medal[i]} ${e.manager} — ${e.value} 次`)
+    .join("\n");
 
   return [
     `${m.leagueName} ｜ FPL ${m.seasonLabel}`,
@@ -92,9 +120,13 @@ export function buildCaption(d: Dashboard, id: AngleId): string {
     `🏅 本週總榜前五`,
     rows,
     ``,
-    `⭐ 本週焦點`,
-    `✨ 單週最高分 — ${d.weeklyTop.manager}（${d.weeklyTop.score} 分）`,
-    `📈 賽季最高分紀錄 — ${d.highestGw.manager}（${d.highestGw.score} 分）`,
+    `⭐ 領先者之爭 · Leading the Race`,
+    ``,
+    `🚀 單週最高分紀錄 Highest Gameweek Score`,
+    hgw,
+    ``,
+    `👑 每週最佳次數 Most Manager of the Week`,
+    motw,
     ``,
     `📊 完整數據與獎項排行`,
     DASHBOARD_URL,

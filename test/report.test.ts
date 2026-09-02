@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { selectAngle, formatDeadlineMYT, buildCaption } from "@/lib/report";
+import { selectAngle, formatDeadlineMYT, buildCaption, highestGwRace, motwRace } from "@/lib/report";
 import { parseDashboard } from "@/lib/types";
 import sample from "@/test/fixtures/dashboard.sample.json";
 
@@ -31,13 +31,36 @@ describe("formatDeadlineMYT", () => {
 });
 
 describe("buildCaption", () => {
-  it("includes league, all five names, honours and hashtags", () => {
+  it("includes league, standings, the leading-the-race honours and hashtags", () => {
     const d = parseDashboard(sample);
     const cap = buildCaption(d, "steady");
     expect(cap).toContain("FPL Season 6");
     expect(cap).toContain("Steve Strange");
-    expect(cap).toContain("賽季最高分紀錄");
+    expect(cap).toContain("Leading the Race");
+    expect(cap).toContain("Highest Gameweek Score");
+    expect(cap).toContain("Most Manager of the Week");
+    // top-3 race: leader + a runner-up both appear
+    expect(cap).toContain("Liang Arsenal");
     expect(cap).toContain("#FPLSeason6");
     expect(cap).toContain("MYT");
+  });
+});
+
+describe("race helpers", () => {
+  const d = parseDashboard(sample);
+  it("highestGwRace returns leader + runners-up (top 3, by score)", () => {
+    const race = highestGwRace(d);
+    expect(race.map((r) => r.manager)).toEqual([
+      "Steve Strange",
+      "Liang Arsenal",
+      "soo sheng",
+    ]);
+    expect(race[0].value).toBe(96);
+  });
+  it("motwRace returns leader + runners-up (by wins), capped at 3", () => {
+    const race = motwRace(d);
+    expect(race).toHaveLength(2); // only two managers have a weekly win in the fixture
+    expect(race[0]).toEqual({ manager: "Steve Strange", value: 1 });
+    expect(race[1]).toEqual({ manager: "Liang Arsenal", value: 1 });
   });
 });

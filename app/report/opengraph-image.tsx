@@ -1,6 +1,13 @@
 import { ImageResponse } from "next/og";
 import { getDashboard } from "@/lib/data";
-import { selectAngle, posterHighlight, formatDeadlineMYT, DASHBOARD_URL } from "@/lib/report";
+import {
+  selectAngle,
+  posterHighlight,
+  formatDeadlineMYT,
+  DASHBOARD_URL,
+  highestGwRace,
+  motwRace,
+} from "@/lib/report";
 
 export const size = { width: 1080, height: 1350 };
 export const contentType = "image/png";
@@ -58,15 +65,88 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
+function RaceColumn({
+  icon,
+  title,
+  race,
+  unit,
+  valueColor,
+}: {
+  icon: string;
+  title: string;
+  race: { manager: string; value: number }[];
+  unit: string;
+  valueColor: string;
+}) {
+  const MEDAL = ["🥇", "🥈", "🥉"];
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        borderRadius: 18,
+        border: `1px solid ${COLORS.line}`,
+        backgroundColor: COLORS.surface,
+        padding: "20px 22px",
+      }}
+    >
+      <div style={{ display: "flex", fontSize: 23, fontWeight: 700, color: COLORS.muted }}>
+        {`${icon} ${title}`}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
+        {race.map((e, i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: i === 0 ? 0 : 10,
+            }}
+          >
+            <div style={{ display: "flex", width: 34, fontSize: 24 }}>{MEDAL[i]}</div>
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                overflow: "hidden",
+                fontSize: 25,
+                fontWeight: i === 0 ? 700 : 400,
+                color: i === 0 ? COLORS.text : COLORS.muted,
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {e.manager}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                fontSize: 30,
+                fontWeight: 700,
+                color: i === 0 ? valueColor : COLORS.text,
+              }}
+            >
+              {`${e.value}${unit}`}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function Image() {
   const data = getDashboard();
-  const { meta, standings, weeklyTop, highestGw } = data;
+  const { meta, standings } = data;
   const angle = selectAngle(data.report.flags);
   const top5 = standings.slice(0, 5);
   const highlight = posterHighlight(data, angle);
   const deadline = formatDeadlineMYT(meta.nextGw.deadlineUtc);
   const seasonDigits = meta.seasonLabel.replace(/\D/g, "");
   const siteHost = DASHBOARD_URL.replace(/^https?:\/\//, "");
+  const hgwRace = highestGwRace(data);
+  const motwList = motwRace(data);
 
   // Every string that will be drawn, so the fetched subset covers all of it.
   const LATIN =
@@ -80,16 +160,16 @@ export default async function Image() {
       "FPL 遊戲週戰報 GW",
       highlight,
       "本週總榜前五 Top",
-      "本週特別榮譽 Honours",
-      "單週最高分",
-      "賽季最高分紀錄",
+      "領先者之爭 Leading the Race",
+      "單週最高分 分",
+      "每週最佳 次",
       "Gameweek 截止",
       deadline,
       "Next Deadline",
       siteHost,
       ...top5.map((r) => r.manager),
-      weeklyTop.manager,
-      highestGw.manager,
+      ...hgwRace.map((e) => e.manager),
+      ...motwList.map((e) => e.manager),
     ].join(" ");
 
   const font = await loadNotoSansTC(fontText);
@@ -211,68 +291,10 @@ export default async function Image() {
           ))}
         </div>
 
-        <SectionLabel>本週特別榮譽 · Honours</SectionLabel>
+        <SectionLabel>領先者之爭 · Leading the Race</SectionLabel>
         <div style={{ display: "flex", gap: 20, marginTop: 4 }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flex: 1,
-              borderRadius: 18,
-              border: `1px solid ${COLORS.line}`,
-              backgroundColor: COLORS.surface,
-              padding: "22px 26px",
-            }}
-          >
-            <div style={{ display: "flex", fontSize: 24, fontWeight: 700, color: COLORS.muted }}>
-              ✨ 單週最高分
-            </div>
-            <div
-              style={{
-                display: "flex",
-                marginTop: 10,
-                fontSize: 54,
-                fontWeight: 700,
-                lineHeight: 1,
-                color: COLORS.mint,
-              }}
-            >
-              {weeklyTop.score}
-            </div>
-            <div style={{ display: "flex", marginTop: 8, fontSize: 26, color: COLORS.text }}>
-              {weeklyTop.manager}
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flex: 1,
-              borderRadius: 18,
-              border: `1px solid ${COLORS.line}`,
-              backgroundColor: COLORS.surface,
-              padding: "22px 26px",
-            }}
-          >
-            <div style={{ display: "flex", fontSize: 24, fontWeight: 700, color: COLORS.muted }}>
-              📈 賽季最高分紀錄
-            </div>
-            <div
-              style={{
-                display: "flex",
-                marginTop: 10,
-                fontSize: 54,
-                fontWeight: 700,
-                lineHeight: 1,
-                color: COLORS.gold,
-              }}
-            >
-              {highestGw.score}
-            </div>
-            <div style={{ display: "flex", marginTop: 8, fontSize: 26, color: COLORS.text }}>
-              {highestGw.manager}
-            </div>
-          </div>
+          <RaceColumn icon="🚀" title="單週最高分" race={hgwRace} unit=" 分" valueColor={COLORS.mint} />
+          <RaceColumn icon="👑" title="每週最佳" race={motwList} unit=" 次" valueColor={COLORS.gold} />
         </div>
 
         {/* Footer */}
