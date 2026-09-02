@@ -215,8 +215,10 @@ def main():
     # --- THE DEFINITIVE TIME MACHINE (based on your superior logic) ---
     print("Loading historical rank 'Time Machine' from Google Sheet...")
     try:
-        time_machine_sheet = spreadsheet.worksheet("_time_machine_ranks")
-        time_machine_df = pd.DataFrame(time_machine_sheet.get_all_records())
+        time_machine_df = with_retry(
+            lambda: pd.DataFrame(spreadsheet.worksheet("_time_machine_ranks").get_all_records()),
+            description="read '_time_machine_ranks' worksheet",
+        )
     except gspread.WorksheetNotFound:
         print("  '_time_machine_ranks' not found. Will be created at the end of this run.")
         time_machine_df = pd.DataFrame(columns=['gameweek', 'manager_id', 'manager_name', 'classic_rank', 'h2h_rank'])
@@ -224,8 +226,10 @@ def main():
     # --- Read the manual penalty data and create player name map ---
     print("Fetching manual penalty data...")
     try:
-        manual_penalty_sheet = spreadsheet.worksheet('manual_penalty_data')
-        manual_penalty_df = pd.DataFrame(manual_penalty_sheet.get_all_records())
+        manual_penalty_df = with_retry(
+            lambda: pd.DataFrame(spreadsheet.worksheet('manual_penalty_data').get_all_records()),
+            description="read 'manual_penalty_data' worksheet",
+        )
         if not manual_penalty_df.empty:
             # Ensure Gameweek column is numeric for safe comparison
             manual_penalty_df['Gameweek'] = pd.to_numeric(manual_penalty_df['Gameweek'], errors='coerce').dropna()
